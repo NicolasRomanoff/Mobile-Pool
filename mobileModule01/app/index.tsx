@@ -12,7 +12,7 @@ const Index = () => {
         alignItems: "center",
       }}
     >
-      <Text style={{ color: "#ffffff" }}>Mobile Module 00</Text>
+      <Text style={{ color: "#ffffff" }}>Mobile Module 01</Text>
       <Button
         title="Exercise 00"
         onPress={() => {
@@ -23,18 +23,6 @@ const Index = () => {
         title="Exercise 01"
         onPress={() => {
           router.push("../ex01");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 02"
-        onPress={() => {
-          router.push("../ex02");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 03"
-        onPress={() => {
-          router.push("../ex03");
         }}
       ></Button>
     </SafeAreaView>
