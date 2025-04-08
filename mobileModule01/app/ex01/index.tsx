@@ -1,15 +1,29 @@
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import {
   TabView,
   SceneMap,
   NavigationState,
   Route,
 } from "react-native-tab-view";
-import { Calendar, CalendarDays, Sun } from "lucide-react-native";
+import {
+  Calendar,
+  CalendarDays,
+  Navigation,
+  Search,
+  Sun,
+} from "lucide-react-native";
 import Currently from "./tabs/currently";
 import Today from "./tabs/today";
 import Weekly from "./tabs/weekly";
 import { useState } from "react";
+import useLocationStore from "@/hooks/locationStore";
 
 const renderScene = SceneMap({
   currently: Currently,
@@ -68,16 +82,59 @@ const MyTabBar: React.FC<{
 const Ex00 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const { setLocation } = useLocationStore();
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      tabBarPosition={"bottom"}
-      renderTabBar={(props) => <MyTabBar {...props} />}
-    />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          height: 70,
+          backgroundColor: "orange",
+          display: "flex",
+          flexDirection: "row",
+          gap: 20,
+          paddingHorizontal: 20,
+        }}
+      >
+        <Search
+          color={"black"}
+          size={"30"}
+          style={{
+            alignSelf: "center",
+          }}
+        />
+        <TextInput
+          style={{
+            flex: 1,
+            fontSize: 20,
+            color: "white",
+            borderColor: "black",
+            borderRadius: 10,
+            borderWidth: 2,
+            margin: 5,
+            paddingHorizontal: 10,
+          }}
+          placeholder="Search location ..."
+          onChangeText={setLocation}
+        ></TextInput>
+        <Navigation
+          color={"black"}
+          size={"30"}
+          style={{
+            alignSelf: "center",
+          }}
+          onPress={() => setLocation("Geolocation")}
+        />
+      </View>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        tabBarPosition={"bottom"}
+        renderTabBar={(props) => <MyTabBar {...props} />}
+      />
+    </SafeAreaView>
   );
 };
 
