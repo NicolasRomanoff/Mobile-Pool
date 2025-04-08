@@ -1,8 +1,11 @@
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CalculatorBtn from "./CalculatorBtn";
+import { useState } from "react";
 
 const Ex03 = () => {
+  const [expression, setExpression] = useState("");
+  const [result, setResult] = useState("");
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 / 3, backgroundColor: "#4476c7" }}>
@@ -27,7 +30,7 @@ const Ex03 = () => {
             color: "#4476c7",
           }}
         >
-          0
+          {expression}
         </Text>
         <Text
           style={{
@@ -37,7 +40,7 @@ const Ex03 = () => {
             color: "#4476c7",
           }}
         >
-          0
+          {result}
         </Text>
       </View>
       <View style={{ flex: 2, backgroundColor: "#4476c7" }}>
@@ -49,6 +52,8 @@ const Ex03 = () => {
             { value: "C", color: "red" },
             { value: "AC", color: "red" },
           ]}
+          setExpression={setExpression}
+          setResult={setResult}
         ></CalculatorRow>
         <CalculatorRow
           btnValues={[
@@ -58,6 +63,8 @@ const Ex03 = () => {
             { value: "+", color: "white" },
             { value: "-", color: "white" },
           ]}
+          setExpression={setExpression}
+          setResult={setResult}
         ></CalculatorRow>
         <CalculatorRow
           btnValues={[
@@ -67,6 +74,8 @@ const Ex03 = () => {
             { value: "*", color: "white" },
             { value: "/", color: "white" },
           ]}
+          setExpression={setExpression}
+          setResult={setResult}
         ></CalculatorRow>
         <CalculatorRow
           btnValues={[
@@ -76,6 +85,8 @@ const Ex03 = () => {
             { value: "=", color: "white" },
             { value: "", color: "" },
           ]}
+          setExpression={setExpression}
+          setResult={setResult}
         ></CalculatorRow>
       </View>
     </SafeAreaView>
@@ -84,7 +95,9 @@ const Ex03 = () => {
 
 const CalculatorRow: React.FC<{
   btnValues: { value: string; color: string }[];
-}> = ({ btnValues }) => {
+  setExpression: React.Dispatch<React.SetStateAction<string>>;
+  setResult: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ btnValues, setExpression, setResult }) => {
   return (
     <View
       style={{
@@ -92,8 +105,15 @@ const CalculatorRow: React.FC<{
         flexDirection: "row",
       }}
     >
-      {btnValues.map((btnValue) => {
-        return <CalculatorBtn btnValue={btnValue}></CalculatorBtn>;
+      {btnValues.map((btnValue, i) => {
+        return (
+          <CalculatorBtn
+            key={i}
+            btnValue={btnValue}
+            setExpression={setExpression}
+            setResult={setResult}
+          ></CalculatorBtn>
+        );
       })}
     </View>
   );

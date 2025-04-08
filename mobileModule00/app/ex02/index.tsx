@@ -92,8 +92,8 @@ const CalculatorRow: React.FC<{
         flexDirection: "row",
       }}
     >
-      {btnValues.map((btnValue) => {
-        return <CalculatorBtn btnValue={btnValue}></CalculatorBtn>;
+      {btnValues.map((btnValue, i) => {
+        return <CalculatorBtn key={i} btnValue={btnValue}></CalculatorBtn>;
       })}
     </View>
   );
