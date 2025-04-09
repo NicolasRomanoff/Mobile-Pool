@@ -7,8 +7,8 @@ const Weekly = () => {
   const { location } = useLocationStore();
   return (
     <SafeAreaView style={style.container}>
-      <Text>Weekly</Text>
-      <Text>{location}</Text>
+      <Text style={style.text}>Weekly</Text>
+      <Text style={style.text}>{location}</Text>
     </SafeAreaView>
   );
 };

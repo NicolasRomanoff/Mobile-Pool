@@ -83,6 +83,7 @@ const Ex00 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const { setLocation } = useLocationStore();
+  const [locationTmp, setLocationTmp] = useState("");
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -115,7 +116,8 @@ const Ex00 = () => {
             paddingHorizontal: 10,
           }}
           placeholder="Search location ..."
-          onChangeText={setLocation}
+          onBlur={() => setLocation(locationTmp)}
+          onChangeText={setLocationTmp}
         ></TextInput>
         <Navigation
           color={"black"}

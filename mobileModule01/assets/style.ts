@@ -7,6 +7,10 @@ const style = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
   },
+  text: {
+    textAlign: "center",
+    fontSize: 30,
+  },
 });
 
 export default style;

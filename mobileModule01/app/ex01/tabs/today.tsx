@@ -7,8 +7,8 @@ const Today = () => {
   const { location } = useLocationStore();
   return (
     <SafeAreaView style={style.container}>
-      <Text>Today</Text>
-      <Text>{location}</Text>
+      <Text style={style.text}>Today</Text>
+      <Text style={style.text}>{location}</Text>
     </SafeAreaView>
   );
 };

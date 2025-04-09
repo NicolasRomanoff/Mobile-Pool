@@ -7,8 +7,8 @@ const Currently = () => {
   const { location } = useLocationStore();
   return (
     <SafeAreaView style={style.container}>
-      <Text>Currently</Text>
-      <Text>{location}</Text>
+      <Text style={style.text}>Currently</Text>
+      <Text style={style.text}>{location}</Text>
     </SafeAreaView>
   );
 };
