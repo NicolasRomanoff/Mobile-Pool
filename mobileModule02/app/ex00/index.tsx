@@ -22,8 +22,12 @@ import {
 import Currently from "./tabs/currently";
 import Today from "./tabs/today";
 import Weekly from "./tabs/weekly";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLocationStore from "@/hooks/locationStore";
+import {
+  getCurrentPositionAsync,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
 
 const renderScene = SceneMap({
   currently: Currently,
@@ -79,11 +83,28 @@ const MyTabBar: React.FC<{
   );
 };
 
-const Ex01 = () => {
+const Ex00 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const { setLocation } = useLocationStore();
+  const { setLocation, setLocationName, setFinded } = useLocationStore();
   const [locationTmp, setLocationTmp] = useState("");
+
+  const getLocation = async () => {
+    let { status } = await requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      setFinded(true);
+      let { coords } = await getCurrentPositionAsync({});
+      setLocation({
+        name: "",
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -116,7 +137,7 @@ const Ex01 = () => {
             paddingHorizontal: 10,
           }}
           placeholder="Search location ..."
-          onBlur={() => setLocation(locationTmp)}
+          onBlur={() => setLocationName({ name: locationTmp })}
           onChangeText={setLocationTmp}
         ></TextInput>
         <Navigation
@@ -125,7 +146,7 @@ const Ex01 = () => {
           style={{
             alignSelf: "center",
           }}
-          onPress={() => setLocation("Geolocation")}
+          onPress={async () => await getLocation()}
         />
       </View>
       <TabView
@@ -140,4 +161,4 @@ const Ex01 = () => {
   );
 };
 
-export default Ex01;
+export default Ex00;
