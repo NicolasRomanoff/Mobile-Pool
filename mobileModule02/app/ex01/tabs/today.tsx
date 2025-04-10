@@ -11,7 +11,15 @@ const Today = () => {
       {finded ? (
         <View>
           <Text style={style.text}>Today</Text>
-          {location.name && <Text style={style.text}>{location.name}</Text>}
+          <Text style={style.text}>
+            {Object.entries(location)
+              .filter(
+                ([key, value]) =>
+                  ["city", "region", "country"].includes(key) && value
+              )
+              .map(([key, value]) => value)
+              .join(", ")}
+          </Text>
           <Text style={style.text}>
             {location.latitude} {location.longitude}
           </Text>

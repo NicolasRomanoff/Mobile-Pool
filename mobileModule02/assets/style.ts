@@ -33,7 +33,7 @@ const style = StyleSheet.create({
     borderColor: "black",
     marginTop: 1,
     padding: 10,
-    zIndex: 1,
+    zIndex: 999,
   },
   text: {
     textAlign: "center",

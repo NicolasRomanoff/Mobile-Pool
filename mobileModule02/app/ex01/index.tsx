@@ -1,23 +1,36 @@
 import {
+  Pressable,
   SafeAreaView,
+  Text,
   TextInput,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
-import { TabView, SceneMap } from "react-native-tab-view";
-import { Navigation, Search } from "lucide-react-native";
+import {
+  TabView,
+  SceneMap,
+  NavigationState,
+  Route,
+} from "react-native-tab-view";
+import {
+  Calendar,
+  CalendarDays,
+  Navigation,
+  Search,
+  Sun,
+} from "lucide-react-native";
 import Currently from "./tabs/currently";
 import Today from "./tabs/today";
 import Weekly from "./tabs/weekly";
 import myStyle from "@/assets/style";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import useLocationStore from "@/hooks/locationStore";
 import {
   getCurrentPositionAsync,
   requestForegroundPermissionsAsync,
+  reverseGeocodeAsync,
 } from "expo-location";
-import Suggestions from "./Suggestions";
-import MyTabBar from "./MyTabBar";
 
 const renderScene = SceneMap({
   currently: Currently,
@@ -31,10 +44,111 @@ const routes = [
   { key: "weekly", title: "Weekly" },
 ];
 
+const MyTabBar: React.FC<{
+  navigationState: NavigationState<Route>;
+  jumpTo: (key: string) => void;
+}> = ({ navigationState, jumpTo }) => {
+  return (
+    <View style={{ flexDirection: "row", backgroundColor: "white" }}>
+      {navigationState.routes.map((route, index) => {
+        const isFocused = navigationState.index === index;
+        const color = isFocused ? "orange" : "gray";
+
+        const renderIcon = () => {
+          switch (route.key) {
+            case "currently":
+              return <Sun color={color} size={24} />;
+            case "today":
+              return <Calendar color={color} size={24} />;
+            case "weekly":
+              return <CalendarDays color={color} size={24} />;
+            default:
+              return null;
+          }
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            onPress={() => jumpTo(route.key)}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            {renderIcon()}
+            <Text style={{ color, marginTop: 4 }}>{route.title}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};
+
+const Suggestions: React.FC<
+  {
+    suggestions: {
+      city: string;
+      region: string;
+      country: string;
+      latitude: number;
+      longitude: number;
+    }[];
+    setLocationTmp: React.Dispatch<React.SetStateAction<string>>;
+    setIsSuggestionSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  } & ComponentProps<typeof View>
+> = ({
+  suggestions,
+  setLocationTmp,
+  setIsSuggestionSelected,
+  style,
+  ...props
+}) => {
+  const { setLocation } = useLocationStore();
+  return (
+    <View style={style} {...props}>
+      {!suggestions.length && <Text style={myStyle.grayText}>No data ...</Text>}
+      {suggestions.map((sug, i) => {
+        return (
+          <TouchableOpacity
+            key={i}
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              padding: 5,
+              margin: 1,
+            }}
+            onPress={() => {
+              console.log("test");
+              setLocation({ ...sug });
+              setLocationTmp("");
+              setIsSuggestionSelected(false);
+            }}
+          >
+            <Text style={myStyle.suggestionText}>
+              {Object.entries(sug)
+                .filter(
+                  ([key, value]) =>
+                    ["city", "region", "country"].includes(key) && value
+                )
+                .map(([key, value], index) => (
+                  <Text key={index} style={{ color: index ? "gray" : "black" }}>
+                    {(index ? ", " : "") + value}
+                  </Text>
+                ))}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
+
 const Ex01 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const { setLocation, setLocationName, setFinded } = useLocationStore();
+  const { location, setLocation, setFinded } = useLocationStore();
   const [locationTmp, setLocationTmp] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
@@ -81,8 +195,14 @@ const Ex01 = () => {
     if (status === "granted") {
       setFinded(true);
       let { coords } = await getCurrentPositionAsync({});
+      const location = await reverseGeocodeAsync({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
       setLocation({
-        name: "Your localisation",
+        city: location[0]?.city,
+        region: location[0]?.region,
+        country: location[0]?.country,
         latitude: coords.latitude,
         longitude: coords.longitude,
       });
@@ -108,6 +228,15 @@ const Ex01 = () => {
     };
   }, [locationTmp]);
 
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setIsSuggestionSelected(false);
+    }, 500);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [location]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={myStyle.topBar}>
@@ -124,30 +253,22 @@ const Ex01 = () => {
           placeholder="Search location ..."
           value={locationTmp}
           onBlur={() => {
-            if (locationTmp) setLocationName({ name: locationTmp });
-            setIsSuggestionSelected(false);
+            if (locationTmp) {
+              setLocation({
+                city: locationTmp,
+                region: "",
+                country: "",
+                latitude: 0,
+                longitude: 0,
+              });
+              setLocationTmp("");
+            }
           }}
           onChangeText={(e) => {
             setLocationTmp(e);
             setIsSuggestionSelected(true);
           }}
         />
-        {isSuggestionSelected && (
-          <Suggestions
-            suggestions={suggestions}
-            setLocationTmp={setLocationTmp}
-            setIsSuggestionSelected={setIsSuggestionSelected}
-            style={[
-              myStyle.suggestion,
-              {
-                left: coordsSuggestions.x,
-                top: coordsSuggestions.y + coordsSuggestions.height,
-                width: coordsSuggestions.width,
-                display: "flex",
-              },
-            ]}
-          />
-        )}
         <Navigation
           color={"black"}
           size={"30"}
@@ -165,6 +286,22 @@ const Ex01 = () => {
         tabBarPosition={"bottom"}
         renderTabBar={(props) => <MyTabBar {...props} />}
       />
+      {isSuggestionSelected && (
+        <Suggestions
+          suggestions={suggestions}
+          setLocationTmp={setLocationTmp}
+          setIsSuggestionSelected={setIsSuggestionSelected}
+          style={[
+            myStyle.suggestion,
+            {
+              left: coordsSuggestions.x,
+              top: coordsSuggestions.y + coordsSuggestions.height,
+              width: coordsSuggestions.width,
+              display: "flex",
+            },
+          ]}
+        />
+      )}
     </SafeAreaView>
   );
 };
