@@ -25,6 +25,12 @@ const Index = () => {
           router.push("../ex01");
         }}
       ></Button>
+      <Button
+        title="Exercise 02"
+        onPress={() => {
+          router.push("../ex02");
+        }}
+      ></Button>
     </SafeAreaView>
   );
 };
