@@ -120,7 +120,6 @@ const Suggestions: React.FC<
               margin: 1,
             }}
             onPress={() => {
-              console.log("test");
               setLocation({ ...sug });
               setLocationTmp("");
               setIsSuggestionSelected(false);
