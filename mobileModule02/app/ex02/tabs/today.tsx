@@ -1,6 +1,6 @@
 import style from "@/assets/style";
 import useLocationStore from "@/hooks/locationStore";
-import weatherCode from "@/lib/weatherCode";
+import { weatherCode } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
