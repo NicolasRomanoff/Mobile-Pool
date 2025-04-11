@@ -19,30 +19,34 @@ const Today = () => {
 
   useEffect(() => {
     const getHourlyWeather = async () => {
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&hourly=temperature_2m,weather_code,wind_speed_10m&forecast_days=1`
-      );
-      if (!response.ok) {
+      try {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&hourly=temperature_2m,weather_code,wind_speed_10m&forecast_days=1`
+        );
+        if (!response.ok) {
+          setError({ hasError: true, type: "API Fail" });
+          return;
+        }
+        setError({ hasError: false, type: "undefined" });
+        const { hourly, hourly_units } = await response.json();
+        setTodayWeather({
+          hour: hourly.time.map((time: string) => {
+            return format(new Date(time), "HH:mm");
+          }),
+          temperature: hourly.temperature_2m.map(
+            (temp: string) => temp + hourly_units.temperature_2m
+          ),
+          weather: hourly.weather_code.map(
+            (code: number) =>
+              weatherCode[code as keyof typeof weatherCode] || "Undefined"
+          ),
+          windSpeed: hourly.wind_speed_10m.map(
+            (speed: string) => speed + hourly_units.wind_speed_10m
+          ),
+        });
+      } catch (e) {
         setError({ hasError: true, type: "API Fail" });
-        return;
       }
-      setError({ hasError: false, type: "undefined" });
-      const { hourly, hourly_units } = await response.json();
-      setTodayWeather({
-        hour: hourly.time.map((time: string) => {
-          return format(new Date(time), "HH:mm");
-        }),
-        temperature: hourly.temperature_2m.map(
-          (temp: string) => temp + hourly_units.temperature_2m
-        ),
-        weather: hourly.weather_code.map(
-          (code: number) =>
-            weatherCode[code as keyof typeof weatherCode] || "Undefined"
-        ),
-        windSpeed: hourly.wind_speed_10m.map(
-          (speed: string) => speed + hourly_units.wind_speed_10m
-        ),
-      });
     };
     getHourlyWeather();
   }, [location]);
