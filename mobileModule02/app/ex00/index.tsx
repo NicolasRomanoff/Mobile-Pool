@@ -86,7 +86,7 @@ const MyTabBar: React.FC<{
 const Ex00 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const { setLocation, setLocationName, setFinded } = useLocationStore();
+  const { location, setLocation, setFinded } = useLocationStore();
   const [locationTmp, setLocationTmp] = useState("");
 
   const getLocation = async () => {
@@ -95,7 +95,9 @@ const Ex00 = () => {
       setFinded(true);
       let { coords } = await getCurrentPositionAsync({});
       setLocation({
-        name: "",
+        city: "",
+        region: "",
+        country: "",
         latitude: coords.latitude,
         longitude: coords.longitude,
       });
@@ -137,7 +139,15 @@ const Ex00 = () => {
             paddingHorizontal: 10,
           }}
           placeholder="Search location ..."
-          onBlur={() => setLocationName({ name: locationTmp })}
+          onBlur={() =>
+            setLocation({
+              city: locationTmp,
+              region: "",
+              country: "",
+              latitude: location.latitude,
+              longitude: location.longitude,
+            })
+          }
           onChangeText={setLocationTmp}
         ></TextInput>
         <Navigation

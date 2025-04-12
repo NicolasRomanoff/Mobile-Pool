@@ -11,7 +11,7 @@ const Weekly = () => {
       {finded ? (
         <View>
           <Text style={style.text}>Weekly</Text>
-          {location.name && <Text style={style.text}>{location.name}</Text>}
+          {location.city && <Text style={style.text}>{location.city}</Text>}
           <Text style={style.text}>
             {location.latitude} {location.longitude}
           </Text>
