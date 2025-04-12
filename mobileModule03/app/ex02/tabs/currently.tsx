@@ -59,7 +59,9 @@ const Currently = () => {
           <View style={{ flex: 1 / 4, justifyContent: "center" }}>
             <Text style={style.tabColoredText}>{location.city}</Text>
             <Text style={style.tabText}>
-              {location.region}, {location.country}
+              {location.region}
+              {location.region && location.country && ", "}
+              {location.country}
             </Text>
           </View>
           <View style={{ flex: 1 / 2, justifyContent: "space-evenly" }}>
