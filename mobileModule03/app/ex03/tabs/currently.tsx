@@ -32,7 +32,7 @@ const Currently = () => {
           temperature: current.temperature_2m + current_units.temperature_2m,
           weather:
             weatherCode[current.weather_code as keyof typeof weatherCode]
-              .type || "Undefined",
+              ?.type || "Undefined",
           windSpeed: current.wind_speed_10m + current_units.wind_speed_10m,
         });
       } catch (e) {
