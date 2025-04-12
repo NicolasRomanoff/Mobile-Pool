@@ -6,7 +6,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     alignSelf: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     width: "100%",
     height: "100%",
   },
