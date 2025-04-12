@@ -2,10 +2,60 @@ import style from "@/assets/style";
 import useLocationStore from "@/hooks/locationStore";
 import { errorDict, weatherCode } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format } from "date-fns";
 import useErrorStore from "@/hooks/errorStore";
+import { Wind } from "lucide-react-native";
+
+const WeatherCard: React.FC<{
+  hour: string;
+  weather: string;
+  temperature: string;
+  windSpeed: string;
+}> = (data) => {
+  const getWeatherIcon = (weather: string) => {
+    const weatherInfo = Object.entries(weatherCode).find(
+      ([key, value]) => value.type === weather
+    );
+    if (!weatherInfo) return undefined;
+    return weatherInfo[1].icon;
+  };
+
+  const WeatherIcon = getWeatherIcon(data.weather);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        padding: 5,
+        marginHorizontal: 5,
+      }}
+    >
+      <View style={{ flex: 1 / 4 }}>
+        <Text style={style.tabText}>{data.hour}</Text>
+      </View>
+      <View style={{ flex: 1 / 4 }}>
+        {WeatherIcon && (
+          <WeatherIcon
+            size={"30"}
+            color={"#3d7eff"}
+            style={{ alignSelf: "center" }}
+          />
+        )}
+      </View>
+      <View style={{ flex: 1 / 4 }}>
+        <Text style={style.tabColoredText}>{data.temperature}</Text>
+      </View>
+      <View
+        style={{ flex: 1 / 4, flexDirection: "row", justifyContent: "center" }}
+      >
+        <Wind color={"white"} size={20} style={{}} />
+        <Text style={style.tabText}>{data.windSpeed}</Text>
+      </View>
+    </View>
+  );
+};
 
 const Today = () => {
   const { location } = useLocationStore();
@@ -51,34 +101,48 @@ const Today = () => {
     getHourlyWeather();
   }, [location]);
 
+  const weatherData:
+    | {
+        hour: string;
+        weather: string;
+        temperature: string;
+        windSpeed: string;
+      }[]
+    | undefined = todayWeather?.hour.map((_, i) => {
+    return {
+      hour: todayWeather.hour[i],
+      weather: todayWeather.weather[i],
+      temperature: todayWeather.temperature[i],
+      windSpeed: todayWeather.windSpeed[i],
+    };
+  });
+
   return (
     <SafeAreaView style={style.container}>
       {!error.hasError ? (
-        <View>
-          <Text style={style.text}>{location.city}</Text>
-          <Text style={style.text}>{location.region}</Text>
-          <Text style={style.text}>{location.country}</Text>
-          <View style={{ flexDirection: "row", gap: 20 }}>
-            <View style={{ flexDirection: "column" }}>
-              {todayWeather?.hour.map((hour, index) => (
-                <Text key={index}>{hour}</Text>
-              ))}
-            </View>
-            <View style={{ flexDirection: "column" }}>
-              {todayWeather?.temperature.map((temp, index) => (
-                <Text key={index}>{temp}</Text>
-              ))}
-            </View>
-            <View style={{ flexDirection: "column" }}>
-              {todayWeather?.weather.map((weat, index) => (
-                <Text key={index}>{weat}</Text>
-              ))}
-            </View>
-            <View style={{ flexDirection: "column" }}>
-              {todayWeather?.windSpeed.map((wind, index) => (
-                <Text key={index}>{wind}</Text>
-              ))}
-            </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 / 4, justifyContent: "center" }}>
+            <Text style={style.tabColoredText}>{location.city}</Text>
+            <Text style={style.tabText}>
+              {location.region}, {location.country}
+            </Text>
+          </View>
+          <View style={{ flex: 1 / 2 }}>
+            <Text style={style.tabText}>Chart</Text>
+          </View>
+          <View style={{ flex: 1 / 4, justifyContent: "center" }}>
+            <FlatList
+              data={weatherData}
+              renderItem={({ item }) => <WeatherCard {...item} />}
+              keyExtractor={(item) => item.hour}
+              style={{
+                backgroundColor: "rgba(190, 150, 0, 0.7)",
+                padding: 5,
+                borderWidth: 1,
+                borderRadius: 30,
+              }}
+              horizontal
+            />
           </View>
         </View>
       ) : (
