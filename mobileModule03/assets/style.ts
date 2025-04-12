@@ -6,6 +6,9 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     alignSelf: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    width: "100%",
+    height: "100%",
   },
   topBar: {
     height: 70,
@@ -38,6 +41,16 @@ const style = StyleSheet.create({
   text: {
     textAlign: "center",
     fontSize: 30,
+  },
+  tabText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: "white",
+  },
+  tabColoredText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: "#3d7eff",
   },
   grayText: {
     textAlign: "center",

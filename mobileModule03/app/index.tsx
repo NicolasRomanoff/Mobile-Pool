@@ -18,13 +18,19 @@ const Index = () => {
         onPress={() => {
           router.push("../ex00");
         }}
-      ></Button>
+      />
       <Button
         title="Exercise 01"
         onPress={() => {
           router.push("../ex01");
         }}
-      ></Button>
+      />
+      <Button
+        title="Exercise 02"
+        onPress={() => {
+          router.push("../ex02");
+        }}
+      />
     </SafeAreaView>
   );
 };

@@ -1,4 +1,6 @@
 import {
+  ImageBackground,
+  ImageSourcePropType,
   Pressable,
   SafeAreaView,
   Text,
@@ -50,7 +52,7 @@ const MyTabBar: React.FC<{
   jumpTo: (key: string) => void;
 }> = ({ navigationState, jumpTo }) => {
   return (
-    <View style={{ flexDirection: "row", backgroundColor: "white" }}>
+    <View style={{ flexDirection: "row", backgroundColor: "black" }}>
       {navigationState.routes.map((route, index) => {
         const isFocused = navigationState.index === index;
         const color = isFocused ? "orange" : "gray";
@@ -147,7 +149,7 @@ const Suggestions: React.FC<
   );
 };
 
-const Ex00 = () => {
+const Ex02 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const { location, setLocation } = useLocationStore();
@@ -283,14 +285,20 @@ const Ex00 = () => {
           onPress={async () => await getLocation()}
         />
       </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        tabBarPosition={"bottom"}
-        renderTabBar={(props) => <MyTabBar {...props} />}
-      />
+      <ImageBackground
+        source={require("@/assets/images/background.png")}
+        resizeMode="cover"
+        style={{ flex: 1, width: "100%", height: "100%" }}
+      >
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          tabBarPosition={"bottom"}
+          renderTabBar={(props) => <MyTabBar {...props} />}
+        />
+      </ImageBackground>
       {isSuggestionSelected && (
         <Suggestions
           suggestions={suggestions}
@@ -311,4 +319,4 @@ const Ex00 = () => {
   );
 };
 
-export default Ex00;
+export default Ex02;

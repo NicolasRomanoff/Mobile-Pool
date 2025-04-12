@@ -172,7 +172,6 @@ const Ex03 = () => {
         setError({ hasError: true, type: "API Fail" });
         return;
       }
-      setError({ hasError: false, type: "undefined" });
       const citiesData = await response.json();
       if (!citiesData.results) {
         setSuggestions([]);

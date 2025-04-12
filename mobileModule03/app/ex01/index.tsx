@@ -52,7 +52,7 @@ const MyTabBar: React.FC<{
   jumpTo: (key: string) => void;
 }> = ({ navigationState, jumpTo }) => {
   return (
-    <View style={{ flexDirection: "row", backgroundColor: "white" }}>
+    <View style={{ flexDirection: "row", backgroundColor: "black" }}>
       {navigationState.routes.map((route, index) => {
         const isFocused = navigationState.index === index;
         const color = isFocused ? "orange" : "gray";
@@ -174,7 +174,6 @@ const Ex01 = () => {
         setError({ hasError: true, type: "API Fail" });
         return;
       }
-      setError({ hasError: false, type: "undefined" });
       const citiesData = await response.json();
       if (!citiesData.results) {
         setSuggestions([]);

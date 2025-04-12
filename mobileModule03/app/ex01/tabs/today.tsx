@@ -38,7 +38,7 @@ const Today = () => {
           ),
           weather: hourly.weather_code.map(
             (code: number) =>
-              weatherCode[code as keyof typeof weatherCode] || "Undefined"
+              weatherCode[code as keyof typeof weatherCode].type || "Undefined"
           ),
           windSpeed: hourly.wind_speed_10m.map(
             (speed: string) => speed + hourly_units.wind_speed_10m

@@ -2,6 +2,7 @@ import style from "@/assets/style";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
 import { errorDict, weatherCode } from "@/lib/utils";
+import { LucideIcon, Wind } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -41,16 +42,46 @@ const Currently = () => {
     getCurrentWeather();
   }, [location]);
 
+  const getWeatherIcon = () => {
+    const weatherInfo = Object.entries(weatherCode).find(
+      ([key, value]) => value.type === currentWeather?.weather
+    );
+    if (!weatherInfo) return undefined;
+    return weatherInfo[1].icon;
+  };
+
+  const WeatherIcon = getWeatherIcon() as LucideIcon;
+
   return (
     <SafeAreaView style={style.container}>
       {!error.hasError ? (
-        <View>
-          <Text style={style.text}>{location.city}</Text>
-          <Text style={style.text}>{location.region}</Text>
-          <Text style={style.text}>{location.country}</Text>
-          <Text style={style.text}>{currentWeather?.temperature}</Text>
-          <Text style={style.text}>{currentWeather?.weather}</Text>
-          <Text style={style.text}>{currentWeather?.windSpeed}</Text>
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 / 4, justifyContent: "center" }}>
+            <Text style={style.tabColoredText}>{location.city}</Text>
+            <Text style={style.tabText}>
+              {location.region}, {location.country}
+            </Text>
+          </View>
+          <View style={{ flex: 1 / 2, justifyContent: "space-evenly" }}>
+            <Text style={[style.tabColoredText, { fontSize: 40 }]}>
+              {currentWeather?.temperature}
+            </Text>
+            <View style={{}}>
+              <Text style={style.tabText}>{currentWeather?.weather}</Text>
+              <Text style={style.tabColoredText}></Text>
+              {WeatherIcon && (
+                <WeatherIcon
+                  size={"50"}
+                  color={"#3d7eff"}
+                  style={{ alignSelf: "center" }}
+                />
+              )}
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Wind color={"#3d7eff"} style={{ marginHorizontal: 10 }} />
+              <Text style={style.tabText}>{currentWeather?.windSpeed}</Text>
+            </View>
+          </View>
         </View>
       ) : (
         <Text style={style.textError}>{errorDict[error.type]}</Text>

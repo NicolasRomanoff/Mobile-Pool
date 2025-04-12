@@ -38,7 +38,7 @@ const Weekly = () => {
           ),
           weather: daily.weather_code.map(
             (code: number) =>
-              weatherCode[code as keyof typeof weatherCode] || "Undefined"
+              weatherCode[code as keyof typeof weatherCode].type || "Undefined"
           ),
         });
       } catch (e) {
