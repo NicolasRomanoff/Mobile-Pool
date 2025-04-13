@@ -16,24 +16,26 @@ const Weekly = () => {
 
   useEffect(() => {
     const getWeeklyWeather = async () => {
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`
-      );
-      if (!response.ok) return;
-      const { daily, daily_units } = await response.json();
-      setWeeklyWeather({
-        date: daily.time,
-        minTemperature: daily.temperature_2m_min.map(
-          (minTemp: string) => minTemp + daily_units.temperature_2m_min
-        ),
-        maxTemperature: daily.temperature_2m_max.map(
-          (maxTemp: string) => maxTemp + daily_units.temperature_2m_max
-        ),
-        weather: daily.weather_code.map(
-          (code: number) =>
-            weatherCode[code as keyof typeof weatherCode] || "Undefined"
-        ),
-      });
+      try {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`
+        );
+        if (!response.ok) return;
+        const { daily, daily_units } = await response.json();
+        setWeeklyWeather({
+          date: daily.time,
+          minTemperature: daily.temperature_2m_min.map(
+            (minTemp: string) => minTemp + daily_units.temperature_2m_min
+          ),
+          maxTemperature: daily.temperature_2m_max.map(
+            (maxTemp: string) => maxTemp + daily_units.temperature_2m_max
+          ),
+          weather: daily.weather_code.map(
+            (code: number) =>
+              weatherCode[code as keyof typeof weatherCode] || "Undefined"
+          ),
+        });
+      } catch {}
     };
     getWeeklyWeather();
   }, [location]);

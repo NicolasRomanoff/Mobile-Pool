@@ -15,18 +15,20 @@ const Currently = () => {
 
   useEffect(() => {
     const getCurrentWeather = async () => {
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,wind_speed_10m,weather_code`
-      );
-      if (!response.ok) return;
-      const { current, current_units } = await response.json();
-      setCurrentWeather({
-        temperature: current.temperature_2m + current_units.temperature_2m,
-        weather:
-          weatherCode[current.weather_code as keyof typeof weatherCode] ||
-          "Undefined",
-        windSpeed: current.wind_speed_10m + current_units.wind_speed_10m,
-      });
+      try {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,wind_speed_10m,weather_code`
+        );
+        if (!response.ok) return;
+        const { current, current_units } = await response.json();
+        setCurrentWeather({
+          temperature: current.temperature_2m + current_units.temperature_2m,
+          weather:
+            weatherCode[current.weather_code as keyof typeof weatherCode] ||
+            "Undefined",
+          windSpeed: current.wind_speed_10m + current_units.wind_speed_10m,
+        });
+      } catch {}
     };
     getCurrentWeather();
   }, [location]);

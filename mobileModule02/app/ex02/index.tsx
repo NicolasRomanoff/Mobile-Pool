@@ -161,33 +161,35 @@ const Ex02 = () => {
   const citiesRef = useRef<TextInput>(null);
 
   const fetchCity = async (name: string) => {
-    const response = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
-    );
-    if (response.status !== 200) return;
-    const citiesData = await response.json();
-    if (!citiesData.results) {
-      setSuggestions([]);
-      return;
-    }
-    const suggestions = citiesData.results.map(
-      (res: {
-        admin1: string;
-        admin2: string;
-        country: string;
-        latitude: number;
-        longitude: number;
-      }) => {
-        return {
-          city: res.admin2,
-          region: res.admin1,
-          country: res.country,
-          latitude: res.latitude,
-          longitude: res.longitude,
-        };
+    try {
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
+      );
+      if (response.status !== 200) return;
+      const citiesData = await response.json();
+      if (!citiesData.results) {
+        setSuggestions([]);
+        return;
       }
-    );
-    setSuggestions(suggestions);
+      const suggestions = citiesData.results.map(
+        (res: {
+          admin1: string;
+          admin2: string;
+          country: string;
+          latitude: number;
+          longitude: number;
+        }) => {
+          return {
+            city: res.admin2,
+            region: res.admin1,
+            country: res.country,
+            latitude: res.latitude,
+            longitude: res.longitude,
+          };
+        }
+      );
+      setSuggestions(suggestions);
+    } catch {}
   };
 
   const getLocation = async () => {
