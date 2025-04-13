@@ -28,6 +28,7 @@ import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import useLocationStore from "@/hooks/locationStore";
 import {
   getCurrentPositionAsync,
+  getLastKnownPositionAsync,
   requestForegroundPermissionsAsync,
   reverseGeocodeAsync,
 } from "expo-location";
@@ -203,7 +204,9 @@ const Ex03 = () => {
   const getLocation = async () => {
     let { status } = await requestForegroundPermissionsAsync();
     if (status === "granted") {
-      let { coords } = await getCurrentPositionAsync({});
+      let position = await getLastKnownPositionAsync({});
+      if (!position) position = await getCurrentPositionAsync({});
+      const coords = position.coords;
       const location = await reverseGeocodeAsync({
         latitude: coords.latitude,
         longitude: coords.longitude,

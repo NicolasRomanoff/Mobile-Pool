@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import useLocationStore from "@/hooks/locationStore";
 import {
   getCurrentPositionAsync,
+  getLastKnownPositionAsync,
   requestForegroundPermissionsAsync,
 } from "expo-location";
 
@@ -93,7 +94,9 @@ const Ex00 = () => {
     let { status } = await requestForegroundPermissionsAsync();
     if (status === "granted") {
       setFinded(true);
-      let { coords } = await getCurrentPositionAsync({});
+      let position = await getLastKnownPositionAsync({});
+      if (!position) position = await getCurrentPositionAsync({});
+      const coords = position.coords;
       setLocation({
         city: "",
         region: "",

@@ -208,10 +208,9 @@ const Ex03 = () => {
   const getLocation = async () => {
     let { status } = await requestForegroundPermissionsAsync();
     if (status === "granted") {
-      // console.log("avant");
-      // console.log(await getLastKnownPositionAsync({}));
-      let { coords } = await getCurrentPositionAsync({});
-      // console.log("après");
+      let position = await getLastKnownPositionAsync({});
+      if (!position) position = await getCurrentPositionAsync({});
+      const coords = position.coords;
       const location = await reverseGeocodeAsync({
         latitude: coords.latitude,
         longitude: coords.longitude,
