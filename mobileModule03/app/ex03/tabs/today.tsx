@@ -1,12 +1,13 @@
 import style from "@/assets/style";
 import useLocationStore from "@/hooks/locationStore";
 import { errorDict, weatherCode } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format } from "date-fns";
 import useErrorStore from "@/hooks/errorStore";
 import { Wind } from "lucide-react-native";
+import { LineChart } from "react-native-chart-kit";
 
 const WeatherCard: React.FC<{
   hour: string;
@@ -66,6 +67,17 @@ const Today = () => {
     weather: string[];
     windSpeed: string[];
   }>();
+  const [chartLength, setChartLength] = useState<{
+    width: number;
+    height: number;
+  }>();
+  const chartRef = useRef<View>(null);
+
+  useEffect(() => {
+    chartRef.current?.measureInWindow((x, y, width, height) => {
+      setChartLength({ width, height });
+    });
+  }, []);
 
   useEffect(() => {
     const getHourlyWeather = async () => {
@@ -117,6 +129,22 @@ const Today = () => {
     };
   });
 
+  const chartData = {
+    labels:
+      (todayWeather?.hour.map((hour, index) =>
+        index % 3 === 0 ? hour : ""
+      ) as string[]) || [],
+    datasets: [
+      {
+        data: (todayWeather?.temperature.map((temperature) =>
+          Number(temperature.replace("°C", ""))
+        ) as number[]) || [0, 0],
+        color: (opacity = 1) => `rgba(190, 150, 0, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+  };
+
   return (
     <SafeAreaView style={style.container}>
       {!error.hasError ? (
@@ -124,13 +152,29 @@ const Today = () => {
           <View style={{ flex: 1 / 4, justifyContent: "center" }}>
             <Text style={style.tabColoredText}>{location.city}</Text>
             <Text style={style.tabText}>
-              {location.region}, {location.country}
+              {location.region}
+              {location.region && location.country && ", "}
+              {location.country}
             </Text>
           </View>
-          <View style={{ flex: 1 / 2 }}>
-            <Text style={style.tabText}>Chart</Text>
+          <View ref={chartRef} style={{ flex: 1 / 2, margin: 10 }}>
+            <LineChart
+              data={chartData}
+              width={(chartLength?.width as number) || 0}
+              height={(chartLength?.height as number) || 0}
+              yAxisSuffix="°C"
+              withShadow={false}
+              formatYLabel={(yValue) => Math.round(Number(yValue)).toString()}
+              segments={7}
+              chartConfig={{
+                backgroundGradientFromOpacity: 0.7,
+                backgroundGradientToOpacity: 0.7,
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              }}
+              bezier
+            />
           </View>
-          <View style={{ flex: 1 / 4, justifyContent: "center" }}>
+          <View style={{ flex: 1 / 4, justifyContent: "center", margin: 2 }}>
             <FlatList
               data={weatherData}
               renderItem={({ item }) => <WeatherCard {...item} />}
