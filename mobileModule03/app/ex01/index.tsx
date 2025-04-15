@@ -268,11 +268,13 @@ const Ex01 = () => {
           placeholder="Search location ..."
           value={locationTmp}
           onBlur={() => {
-            if (locationTmp) {
-              setError({ hasError: true, type: "Unknown City" });
-              setIsSuggestionSelected(false);
-              setLocationTmp("");
-            }
+            setTimeout(() => {
+              if (locationTmp) {
+                setError({ hasError: true, type: "Unknown City" });
+                setIsSuggestionSelected(false);
+                setLocationTmp("");
+              }
+            }, 100);
           }}
           onChangeText={(e) => {
             setLocationTmp(e);

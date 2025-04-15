@@ -257,16 +257,18 @@ const Ex01 = () => {
           placeholder="Search location ..."
           value={locationTmp}
           onBlur={() => {
-            if (locationTmp) {
-              setLocation({
-                city: locationTmp,
-                region: "",
-                country: "",
-                latitude: 0,
-                longitude: 0,
-              });
-              setLocationTmp("");
-            }
+            setTimeout(() => {
+              if (locationTmp) {
+                setLocation({
+                  city: locationTmp,
+                  region: "",
+                  country: "",
+                  latitude: 0,
+                  longitude: 0,
+                });
+                setLocationTmp("");
+              }
+            }, 100);
           }}
           onChangeText={(e) => {
             setLocationTmp(e);

@@ -143,13 +143,15 @@ const Ex00 = () => {
           }}
           placeholder="Search location ..."
           onBlur={() =>
-            setLocation({
-              city: locationTmp,
-              region: "",
-              country: "",
-              latitude: location.latitude,
-              longitude: location.longitude,
-            })
+            setTimeout(() => {
+              setLocation({
+                city: locationTmp,
+                region: "",
+                country: "",
+                latitude: location.latitude,
+                longitude: location.longitude,
+              });
+            }, 100)
           }
           onChangeText={setLocationTmp}
         ></TextInput>
