@@ -1,6 +1,5 @@
 import {
   ImageBackground,
-  ImageSourcePropType,
   Pressable,
   SafeAreaView,
   Text,
@@ -29,10 +28,8 @@ import myStyle from "@/assets/style";
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import useLocationStore from "@/hooks/locationStore";
 import {
-  Accuracy,
   getCurrentPositionAsync,
   getLastKnownPositionAsync,
-  LocationAccuracy,
   requestForegroundPermissionsAsync,
   reverseGeocodeAsync,
 } from "expo-location";

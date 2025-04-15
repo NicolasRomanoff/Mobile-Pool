@@ -1,6 +1,5 @@
 import {
   ImageBackground,
-  ImageSourcePropType,
   Pressable,
   SafeAreaView,
   Text,
