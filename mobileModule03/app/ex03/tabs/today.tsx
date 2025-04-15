@@ -138,14 +138,13 @@ const Today = () => {
 
   const chartData = {
     labels:
-      (todayWeather?.hour.map((hour, index) =>
-        index % 3 === 0 ? hour : ""
-      ) as string[]) || [],
+      todayWeather?.hour.map((hour, index) => (index % 3 === 0 ? hour : "")) ||
+      [],
     datasets: [
       {
-        data: (todayWeather?.temperature.map((temperature) =>
+        data: todayWeather?.temperature.map((temperature) =>
           Number(temperature.replace("°C", ""))
-        ) as number[]) || [0, 0],
+        ) || [0, 0],
         color: (opacity = 1) => `rgba(190, 150, 0, ${opacity})`,
         strokeWidth: 2,
       },

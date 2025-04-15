@@ -152,7 +152,7 @@ const Suggestions: React.FC<
   );
 };
 
-const Ex03 = () => {
+const Ex04 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const { location, setLocation } = useLocationStore();
@@ -326,4 +326,4 @@ const Ex03 = () => {
   );
 };
 
-export default Ex03;
+export default Ex04;
