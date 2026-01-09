@@ -1,24 +1,16 @@
+import { black, yellow } from "@/assets/style";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Typography } from "../../components/Typography";
 import CalculatorBtn from "./CalculatorBtn";
 
 const Ex02 = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 / 3, backgroundColor: "#4476c7" }}>
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 25,
-            textAlign: "center",
-            textAlignVertical: "center",
-            color: "white",
-          }}
-        >
-          Calculator
-        </Text>
+      <View style={{ flex: 1 / 3, backgroundColor: yellow }}>
+        <Typography color="black">Calculator</Typography>
       </View>
-      <View style={{ flex: 2, backgroundColor: "#203d6b" }}>
+      <View style={{ flex: 2, backgroundColor: black }}>
         <Text
           style={{
             fontSize: 50,

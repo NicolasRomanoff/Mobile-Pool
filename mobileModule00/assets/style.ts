@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
-const black = "#1b1b1b";
-const yellow = "#bb9200";
+export const black = "#1b1b1b";
+export const yellow = "#bb9200";
 
 const style = StyleSheet.create({
   container: {
@@ -11,11 +11,6 @@ const style = StyleSheet.create({
     gap: 10,
     backgroundColor: black,
   },
-  text: {
-    textAlign: "center",
-    fontSize: 30,
-    color: yellow,
-  },
   button: {
     backgroundColor: yellow,
     borderColor: "black",
@@ -24,10 +19,13 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
   },
+  text: {
+    textAlign: "center",
+    fontSize: 30,
+  },
   buttonText: {
     textAlign: "center",
     fontSize: 30,
-    color: black,
   },
 });
 
