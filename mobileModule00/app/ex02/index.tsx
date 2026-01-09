@@ -1,8 +1,8 @@
 import { black, yellow } from "@/assets/style";
+import CalculatorBtn from "@/components/ex02/CalculatorBtn";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Typography } from "../../components/Typography";
-import CalculatorRow from "./components/CalculatorRow";
 
 const calculator = [
   ["7", "8", "9", "C", "AC"],
@@ -30,7 +30,11 @@ const Ex02 = () => {
       </View>
       <View style={{ flex: 2, backgroundColor: yellow }}>
         {calculator.map((row, i) => (
-          <CalculatorRow key={i} row={row} />
+          <View key={i} style={{ flex: 1, flexDirection: "row" }}>
+            {row.map((btn) => (
+              <CalculatorBtn key={btn} value={btn} />
+            ))}
+          </View>
         ))}
       </View>
     </SafeAreaView>

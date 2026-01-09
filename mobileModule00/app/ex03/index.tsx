@@ -1,121 +1,85 @@
+import { black, yellow } from "@/assets/style";
+import { Typography } from "@/components/Typography";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CalculatorBtn from "./CalculatorBtn";
+import CalculatorBtn from "../../components/ex03/CalculatorBtn";
+
+const calculator = [
+  ["7", "8", "9", "C", "AC"],
+  ["4", "5", "6", "+", "-"],
+  ["1", "2", "3", "*", "/"],
+  ["0", ".", "00", "=", ""],
+];
 
 const Ex03 = () => {
   const [expression, setExpression] = useState("");
   const [result, setResult] = useState("");
+
+  const append = (value: string) => {
+    setExpression((prev) => {
+      return prev + value;
+    });
+  };
+
+  const equal = () => {
+    if (!expression.match(/^[+-]?\d+(\.\d+)?([+\-*/][+-]?\d+(\.\d+)?)*$/)) {
+      setResult(expression ? "Invalid syntax" : "");
+      return;
+    }
+    const res = new Function(`return ${expression}`)();
+    setResult(isNaN(res) ? "NaN" : res);
+  };
+
+  const clear = () => setExpression((prev) => prev.slice(0, prev.length - 1));
+
+  const allClear = () => {
+    setExpression("");
+    setResult("");
+  };
+
+  const calculatorFns: Record<string, () => void> = {
+    "=": equal,
+    C: clear,
+    AC: allClear,
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 / 3, backgroundColor: "#4476c7" }}>
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 25,
-            textAlign: "center",
-            textAlignVertical: "center",
-            color: "white",
-          }}
-        >
-          Calculator
-        </Text>
+      <View style={{ flex: 1 / 3, backgroundColor: yellow }}>
+        <Typography color="black">Calculator</Typography>
       </View>
-      <View style={{ flex: 2, backgroundColor: "#203d6b" }}>
-        <Text
-          style={{
-            fontSize: 50,
-            textAlign: "right",
-            padding: 5,
-            color: "#4476c7",
-          }}
-        >
+      <View
+        style={{
+          flex: 2,
+          backgroundColor: black,
+          alignItems: "flex-end",
+          paddingEnd: 10,
+        }}
+      >
+        <Typography numberOfLines={1} ellipsizeMode="head">
           {expression}
-        </Text>
-        <Text
-          style={{
-            fontSize: 50,
-            textAlign: "right",
-            padding: 5,
-            color: "#4476c7",
-          }}
-        >
+        </Typography>
+        <Typography numberOfLines={1} ellipsizeMode="head">
           {result}
-        </Text>
+        </Typography>
       </View>
-      <View style={{ flex: 2, backgroundColor: "#4476c7" }}>
-        <CalculatorRow
-          btnValues={[
-            { value: "7", color: "black" },
-            { value: "8", color: "black" },
-            { value: "9", color: "black" },
-            { value: "C", color: "red" },
-            { value: "AC", color: "red" },
-          ]}
-          setExpression={setExpression}
-          setResult={setResult}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "4", color: "black" },
-            { value: "5", color: "black" },
-            { value: "6", color: "black" },
-            { value: "+", color: "white" },
-            { value: "-", color: "white" },
-          ]}
-          setExpression={setExpression}
-          setResult={setResult}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "1", color: "black" },
-            { value: "2", color: "black" },
-            { value: "3", color: "black" },
-            { value: "*", color: "white" },
-            { value: "/", color: "white" },
-          ]}
-          setExpression={setExpression}
-          setResult={setResult}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "0", color: "black" },
-            { value: ".", color: "black" },
-            { value: "00", color: "black" },
-            { value: "=", color: "white" },
-            { value: "", color: "" },
-          ]}
-          setExpression={setExpression}
-          setResult={setResult}
-        ></CalculatorRow>
+      <View style={{ flex: 2, backgroundColor: yellow }}>
+        {calculator.map((row, i) => (
+          <View key={i} style={{ flex: 1, flexDirection: "row" }}>
+            {row.map((btn) => (
+              <CalculatorBtn
+                key={btn}
+                value={btn}
+                onClick={() =>
+                  calculatorFns[btn] ? calculatorFns[btn]() : append(btn)
+                }
+              />
+            ))}
+          </View>
+        ))}
       </View>
     </SafeAreaView>
-  );
-};
-
-const CalculatorRow: React.FC<{
-  btnValues: { value: string; color: string }[];
-  setExpression: React.Dispatch<React.SetStateAction<string>>;
-  setResult: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ btnValues, setExpression, setResult }) => {
-  return (
-    <View
-      style={{
-        flex: 1 / 4,
-        flexDirection: "row",
-      }}
-    >
-      {btnValues.map((btnValue, i) => {
-        return (
-          <CalculatorBtn
-            key={i}
-            btnValue={btnValue}
-            setExpression={setExpression}
-            setResult={setResult}
-          ></CalculatorBtn>
-        );
-      })}
-    </View>
   );
 };
 
