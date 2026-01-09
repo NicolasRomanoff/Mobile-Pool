@@ -1,83 +1,22 @@
-import {
-  Pressable,
-  SafeAreaView,
-  Text,
-  TextInput,
-  useWindowDimensions,
-  View,
-} from "react-native";
-import {
-  TabView,
-  SceneMap,
-  NavigationState,
-  Route,
-} from "react-native-tab-view";
-import {
-  Calendar,
-  CalendarDays,
-  Navigation,
-  Search,
-  Sun,
-} from "lucide-react-native";
+import { black, white, yellow } from "@/assets/style";
+import { Button } from "@/components/Button";
+import TabBar from "@/components/ex01/TabBar";
+import { routes } from "@/const/routes.const";
+import useLocationStore from "@/hooks/locationStore";
+import { Navigation, Search } from "lucide-react-native";
+import { useState } from "react";
+import { TextInput, useWindowDimensions, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { SceneMap, TabView } from "react-native-tab-view";
 import Currently from "./tabs/currently";
 import Today from "./tabs/today";
 import Weekly from "./tabs/weekly";
-import { useState } from "react";
-import useLocationStore from "@/hooks/locationStore";
 
 const renderScene = SceneMap({
   currently: Currently,
   today: Today,
   weekly: Weekly,
 });
-
-const routes = [
-  { key: "currently", title: "Currently" },
-  { key: "today", title: "Today" },
-  { key: "weekly", title: "Weekly" },
-];
-
-const MyTabBar: React.FC<{
-  navigationState: NavigationState<Route>;
-  jumpTo: (key: string) => void;
-}> = ({ navigationState, jumpTo }) => {
-  return (
-    <View style={{ flexDirection: "row", backgroundColor: "white" }}>
-      {navigationState.routes.map((route, index) => {
-        const isFocused = navigationState.index === index;
-        const color = isFocused ? "orange" : "gray";
-
-        const renderIcon = () => {
-          switch (route.key) {
-            case "currently":
-              return <Sun color={color} size={24} />;
-            case "today":
-              return <Calendar color={color} size={24} />;
-            case "weekly":
-              return <CalendarDays color={color} size={24} />;
-            default:
-              return null;
-          }
-        };
-
-        return (
-          <Pressable
-            key={route.key}
-            onPress={() => jumpTo(route.key)}
-            style={{
-              flex: 1,
-              alignItems: "center",
-              padding: 10,
-            }}
-          >
-            {renderIcon()}
-            <Text style={{ color, marginTop: 4 }}>{route.title}</Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-};
 
 const Ex01 = () => {
   const layout = useWindowDimensions();
@@ -90,7 +29,7 @@ const Ex01 = () => {
       <View
         style={{
           height: 70,
-          backgroundColor: "orange",
+          backgroundColor: yellow,
           display: "flex",
           flexDirection: "row",
           gap: 20,
@@ -98,7 +37,7 @@ const Ex01 = () => {
         }}
       >
         <Search
-          color={"black"}
+          color={black}
           size={"30"}
           style={{
             alignSelf: "center",
@@ -108,8 +47,8 @@ const Ex01 = () => {
           style={{
             flex: 1,
             fontSize: 20,
-            color: "white",
-            borderColor: "black",
+            color: white,
+            borderColor: black,
             borderRadius: 10,
             borderWidth: 2,
             margin: 5,
@@ -118,15 +57,16 @@ const Ex01 = () => {
           placeholder="Search location ..."
           onBlur={() => setLocation(locationTmp)}
           onChangeText={setLocationTmp}
-        ></TextInput>
-        <Navigation
-          color={"black"}
-          size={"30"}
-          style={{
-            alignSelf: "center",
-          }}
-          onPress={() => setLocation("Geolocation")}
         />
+        <Button onClick={() => setLocation("Geolocation")}>
+          <Navigation
+            color={black}
+            size={"30"}
+            style={{
+              alignSelf: "center",
+            }}
+          />
+        </Button>
       </View>
       <TabView
         navigationState={{ index, routes }}
@@ -134,7 +74,7 @@ const Ex01 = () => {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         tabBarPosition={"bottom"}
-        renderTabBar={(props) => <MyTabBar {...props} />}
+        renderTabBar={(props) => <TabBar {...props} />}
       />
     </SafeAreaView>
   );

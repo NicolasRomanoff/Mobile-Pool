@@ -1,30 +1,27 @@
+import mobileStyles from "@/assets/style";
+import { Button } from "@/components/Button";
+import { Typography } from "@/components/Typography";
 import { router } from "expo-router";
-import { Button, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const NUMBER_OF_EXERCICES = 2;
 
 const Index = () => {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "#808080",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ color: "#ffffff" }}>Mobile Module 01</Text>
-      <Button
-        title="Exercise 00"
-        onPress={() => {
-          router.push("../ex00");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 01"
-        onPress={() => {
-          router.push("../ex01");
-        }}
-      ></Button>
+    <SafeAreaView style={mobileStyles.container}>
+      <Typography>Mobile Module 01</Typography>
+      {Array.from({ length: NUMBER_OF_EXERCICES }).map((_, i) => {
+        const nb = i.toString().padStart(2, "0");
+        return (
+          <Button
+            key={i}
+            style={mobileStyles.button}
+            onClick={() => router.push(`../ex${nb}`)}
+          >
+            <Typography color="black">ex{nb}</Typography>
+          </Button>
+        );
+      })}
     </SafeAreaView>
   );
 };

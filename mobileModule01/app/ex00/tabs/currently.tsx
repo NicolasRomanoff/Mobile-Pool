@@ -1,11 +1,11 @@
 import style from "@/assets/style";
-import { Text } from "react-native";
+import { Typography } from "@/components/Typography";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Currently = () => {
   return (
     <SafeAreaView style={style.container}>
-      <Text>Currently</Text>
+      <Typography>Currently</Typography>
     </SafeAreaView>
   );
 };

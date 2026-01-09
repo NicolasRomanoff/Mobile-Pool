@@ -1,6 +1,7 @@
 import mobileStyles from "@/assets/style";
+import { Button } from "@/components/Button";
+import { Typography } from "@/components/Typography";
 import { router } from "expo-router";
-import { Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const NUMBER_OF_EXERCICES = 4;
@@ -8,17 +9,17 @@ const NUMBER_OF_EXERCICES = 4;
 const Index = () => {
   return (
     <SafeAreaView style={mobileStyles.container}>
-      <Text style={mobileStyles.text}>Mobile Module 00</Text>
+      <Typography>Mobile Module 00</Typography>
       {Array.from({ length: NUMBER_OF_EXERCICES }).map((_, i) => {
         const nb = i.toString().padStart(2, "0");
         return (
-          <TouchableOpacity
+          <Button
             key={i}
             style={mobileStyles.button}
-            onPress={() => router.push(`../ex${nb}`)}
+            onClick={() => router.push(`../ex${nb}`)}
           >
-            <Text style={mobileStyles.buttonText}>ex{nb}</Text>
-          </TouchableOpacity>
+            <Typography color="black">ex{nb}</Typography>
+          </Button>
         );
       })}
     </SafeAreaView>
