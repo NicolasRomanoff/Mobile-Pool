@@ -1,11 +1,11 @@
-import style from "@/assets/style";
+import mobileStyles from "@/assets/style";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Ex00 = () => {
   return (
-    <SafeAreaView style={style.container}>
+    <SafeAreaView style={mobileStyles.container}>
       <Typography>A simple text</Typography>
       <Button onClick={() => console.log("Button pressed")}>
         <Typography color="black">Click me</Typography>

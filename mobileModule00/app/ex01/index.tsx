@@ -1,4 +1,4 @@
-import style from "@/assets/style";
+import mobileStyles from "@/assets/style";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Ex01 = () => {
   const [btnValue, setBtnValue] = useState("A simple text");
   return (
-    <SafeAreaView style={style.container}>
+    <SafeAreaView style={mobileStyles.container}>
       <Typography>{btnValue}</Typography>
       <Button
         onClick={() => {

@@ -1,8 +1,15 @@
 import { black, yellow } from "@/assets/style";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Typography } from "../../components/Typography";
-import CalculatorBtn from "./CalculatorBtn";
+import CalculatorRow from "./components/CalculatorRow";
+
+const calculator = [
+  ["7", "8", "9", "C", "AC"],
+  ["4", "5", "6", "+", "-"],
+  ["1", "2", "3", "*", "/"],
+  ["0", ".", "00", "=", ""],
+];
 
 const Ex02 = () => {
   return (
@@ -10,84 +17,23 @@ const Ex02 = () => {
       <View style={{ flex: 1 / 3, backgroundColor: yellow }}>
         <Typography color="black">Calculator</Typography>
       </View>
-      <View style={{ flex: 2, backgroundColor: black }}>
-        <Text
-          style={{
-            fontSize: 50,
-            textAlign: "right",
-            padding: 5,
-            color: "#4476c7",
-          }}
-        >
-          0
-        </Text>
-        <Text
-          style={{
-            fontSize: 50,
-            textAlign: "right",
-            padding: 5,
-            color: "#4476c7",
-          }}
-        >
-          0
-        </Text>
+      <View
+        style={{
+          flex: 2,
+          backgroundColor: black,
+          alignItems: "flex-end",
+          paddingEnd: 10,
+        }}
+      >
+        <Typography size="lg">0</Typography>
+        <Typography size="lg">0</Typography>
       </View>
-      <View style={{ flex: 2, backgroundColor: "#4476c7" }}>
-        <CalculatorRow
-          btnValues={[
-            { value: "7", color: "black" },
-            { value: "8", color: "black" },
-            { value: "9", color: "black" },
-            { value: "C", color: "red" },
-            { value: "AC", color: "red" },
-          ]}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "4", color: "black" },
-            { value: "5", color: "black" },
-            { value: "6", color: "black" },
-            { value: "+", color: "white" },
-            { value: "-", color: "white" },
-          ]}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "1", color: "black" },
-            { value: "2", color: "black" },
-            { value: "3", color: "black" },
-            { value: "*", color: "white" },
-            { value: "/", color: "white" },
-          ]}
-        ></CalculatorRow>
-        <CalculatorRow
-          btnValues={[
-            { value: "0", color: "black" },
-            { value: ".", color: "black" },
-            { value: "00", color: "black" },
-            { value: "=", color: "white" },
-            { value: "", color: "" },
-          ]}
-        ></CalculatorRow>
+      <View style={{ flex: 2, backgroundColor: yellow }}>
+        {calculator.map((row, i) => (
+          <CalculatorRow key={i} row={row} />
+        ))}
       </View>
     </SafeAreaView>
-  );
-};
-
-const CalculatorRow: React.FC<{
-  btnValues: { value: string; color: string }[];
-}> = ({ btnValues }) => {
-  return (
-    <View
-      style={{
-        flex: 1 / 4,
-        flexDirection: "row",
-      }}
-    >
-      {btnValues.map((btnValue, i) => {
-        return <CalculatorBtn key={i} btnValue={btnValue}></CalculatorBtn>;
-      })}
-    </View>
   );
 };
 

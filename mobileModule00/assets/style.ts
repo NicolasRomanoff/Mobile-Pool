@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const black = "#1b1b1b";
 export const yellow = "#bb9200";
 
-const style = StyleSheet.create({
+const mobileStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
@@ -21,12 +21,7 @@ const style = StyleSheet.create({
   },
   text: {
     textAlign: "center",
-    fontSize: 30,
-  },
-  buttonText: {
-    textAlign: "center",
-    fontSize: 30,
   },
 });
 
-export default style;
+export default mobileStyles;

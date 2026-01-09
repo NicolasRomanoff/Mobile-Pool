@@ -1,4 +1,4 @@
-import style from "@/assets/style";
+import mobileStyles from "@/assets/style";
 import {
   GestureResponderEvent,
   TouchableOpacity,
@@ -9,6 +9,12 @@ export const Button: React.FC<
   Omit<TouchableOpacityProps, "onPress"> & {
     onClick?: (event: GestureResponderEvent) => void;
   }
-> = ({ onClick, ...props }) => {
-  return <TouchableOpacity style={style.button} onPress={onClick} {...props} />;
+> = ({ onClick, style, ...props }) => {
+  return (
+    <TouchableOpacity
+      style={[mobileStyles.button, style]}
+      onPress={onClick}
+      {...props}
+    />
+  );
 };
