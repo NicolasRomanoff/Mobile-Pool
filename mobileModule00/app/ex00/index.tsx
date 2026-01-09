@@ -1,22 +1,17 @@
-import { Button, Text } from "react-native";
+import style from "@/assets/style";
+import { Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Ex00 = () => {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ fontSize: 40 }}>A simple text</Text>
-      <Button
-        title="Click me"
-        onPress={() => {
-          console.log("Button pressed");
-        }}
-      />
+    <SafeAreaView style={style.container}>
+      <Text style={style.text}>A simple text</Text>
+      <TouchableOpacity
+        style={style.button}
+        onPress={() => console.log("Button pressed")}
+      >
+        <Text style={style.buttonText}>Click me</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -1,42 +1,26 @@
+import style from "@/assets/style";
 import { router } from "expo-router";
-import { Button, Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const NUMBER_OF_EXERCICES = 4;
 
 const Index = () => {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "#808080",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ color: "#ffffff" }}>Mobile Module 00</Text>
-      <Button
-        title="Exercise 00"
-        onPress={() => {
-          router.push("../ex00");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 01"
-        onPress={() => {
-          router.push("../ex01");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 02"
-        onPress={() => {
-          router.push("../ex02");
-        }}
-      ></Button>
-      <Button
-        title="Exercise 03"
-        onPress={() => {
-          router.push("../ex03");
-        }}
-      ></Button>
+    <SafeAreaView style={style.container}>
+      <Text style={style.text}>Mobile Module 00</Text>
+      {Array.from({ length: NUMBER_OF_EXERCICES }).map((_, i) => {
+        const nb = i.toString().padStart(2, "0");
+        return (
+          <TouchableOpacity
+            key={i}
+            style={style.button}
+            onPress={() => router.push(`../ex${nb}`)}
+          >
+            <Text style={style.buttonText}>ex{nb}</Text>
+          </TouchableOpacity>
+        );
+      })}
     </SafeAreaView>
   );
 };

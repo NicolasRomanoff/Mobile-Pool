@@ -35,7 +35,7 @@ Each module is self-contained and can be run independently.
 ```bash
 cd mobileModuleXX
 pnpm install
-pnpm run web
+pnpm web
 ```
 
 ### Docker
