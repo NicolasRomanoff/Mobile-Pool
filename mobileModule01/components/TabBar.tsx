@@ -1,15 +1,15 @@
-import { black, white, yellow } from "@/assets/style";
+import mobileStyles, { black, white } from "@/assets/style";
 import { routes } from "@/const/routes.const";
 import { Pressable, View } from "react-native";
 import { NavigationState, Route } from "react-native-tab-view";
-import { Typography } from "../Typography";
+import { Typography } from "./Typography";
 
 const TabBar: React.FC<{
   navigationState: NavigationState<Route>;
   jumpTo: (key: string) => void;
 }> = ({ navigationState, jumpTo }) => {
   return (
-    <View style={{ flexDirection: "row", backgroundColor: white }}>
+    <View style={mobileStyles.bottomBar}>
       {navigationState.routes.map((route, index) => {
         const isFocused = navigationState.index === index;
         return (
@@ -24,8 +24,8 @@ const TabBar: React.FC<{
           >
             {routes
               .find(({ key }) => key === route.key)
-              ?.icon(isFocused ? yellow : black)}
-            <Typography color={isFocused ? "yellow" : "black"} size="sm">
+              ?.icon(isFocused ? white : black)}
+            <Typography color={isFocused ? "white" : "black"} size="sm">
               {route.title}
             </Typography>
           </Pressable>
