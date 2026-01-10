@@ -23,7 +23,11 @@ const Ex03 = () => {
   };
 
   const equal = () => {
-    if (!expression.match(/^[+-]?\d+(\.\d+)?([+\-*/][+-]?\d+(\.\d+)?)*$/)) {
+    if (
+      !expression.match(
+        /^[+-]?\d+(\.\d+)?((?:\+(?!\+)|-(?!-)|\*(?!\*)|\/(?!\/))[+-]?\d+(\.\d+)?)*$/
+      )
+    ) {
       setResult(expression ? "Invalid syntax" : "");
       return;
     }
@@ -54,13 +58,21 @@ const Ex03 = () => {
           flex: 2,
           backgroundColor: black,
           alignItems: "flex-end",
-          paddingEnd: 10,
+          padding: 10,
         }}
       >
-        <Typography numberOfLines={1} ellipsizeMode="head">
+        <Typography
+          style={{ height: 40 }}
+          numberOfLines={1}
+          ellipsizeMode="head"
+        >
           {expression}
         </Typography>
-        <Typography numberOfLines={1} ellipsizeMode="head">
+        <Typography
+          style={{ height: 40 }}
+          numberOfLines={1}
+          ellipsizeMode="head"
+        >
           {result}
         </Typography>
       </View>
