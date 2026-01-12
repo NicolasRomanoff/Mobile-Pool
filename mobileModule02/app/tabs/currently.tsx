@@ -1,9 +1,12 @@
-import style from "@/assets/style";
+import { default as mobileStyles, default as style } from "@/assets/style";
+import { Typography } from "@/components/Typography";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
-import { errorDict, weatherCode } from "@/lib/utils";
+import { errorDict } from "@/lib/error.const";
+import type { TWeatherCode } from "@/lib/weather.const";
+import { weatherCode } from "@/lib/weather.const";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Currently = () => {
@@ -30,30 +33,41 @@ const Currently = () => {
         setCurrentWeather({
           temperature: current.temperature_2m + current_units.temperature_2m,
           weather:
-            weatherCode[current.weather_code as keyof typeof weatherCode] ||
-            "Undefined",
+            weatherCode[current.weather_code as TWeatherCode] || "Undefined",
           windSpeed: current.wind_speed_10m + current_units.wind_speed_10m,
         });
-      } catch (e) {
+      } catch {
         setError({ hasError: true, type: "API Fail" });
       }
     };
     getCurrentWeather();
-  }, [location]);
+  }, [location, setError]);
 
   return (
-    <SafeAreaView style={style.container}>
+    <SafeAreaView style={mobileStyles.container}>
       {!error.hasError ? (
         <View>
-          <Text style={style.text}>{location.city}</Text>
-          <Text style={style.text}>{location.region}</Text>
-          <Text style={style.text}>{location.country}</Text>
-          <Text style={style.text}>{currentWeather?.temperature}</Text>
-          <Text style={style.text}>{currentWeather?.weather}</Text>
-          <Text style={style.text}>{currentWeather?.windSpeed}</Text>
+          <Typography size="sm">{location.city}</Typography>
+          <Typography size="sm" style={style.text}>
+            {location.region}
+          </Typography>
+          <Typography size="sm" style={style.text}>
+            {location.country}
+          </Typography>
+          <Typography size="sm" style={style.text}>
+            {currentWeather?.temperature}
+          </Typography>
+          <Typography size="sm" style={style.text}>
+            {currentWeather?.weather}
+          </Typography>
+          <Typography size="sm" style={style.text}>
+            {currentWeather?.windSpeed}
+          </Typography>
         </View>
       ) : (
-        <Text style={style.textError}>{errorDict[error.type]}</Text>
+        <Typography color="red" size="sm">
+          {errorDict[error.type]}
+        </Typography>
       )}
     </SafeAreaView>
   );

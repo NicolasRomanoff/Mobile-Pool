@@ -1,11 +1,13 @@
 import style from "@/assets/style";
-import useLocationStore from "@/hooks/locationStore";
-import { errorDict, weatherCode } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { format } from "date-fns";
+import { Typography } from "@/components/Typography";
 import useErrorStore from "@/hooks/errorStore";
+import useLocationStore from "@/hooks/locationStore";
+import { errorDict } from "@/lib/error.const";
+import { weatherCode } from "@/lib/weather.const";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Today = () => {
   const { location } = useLocationStore();
@@ -44,45 +46,55 @@ const Today = () => {
             (speed: string) => speed + hourly_units.wind_speed_10m
           ),
         });
-      } catch (e) {
+      } catch {
         setError({ hasError: true, type: "API Fail" });
       }
     };
     getHourlyWeather();
-  }, [location]);
+  }, [location, setError]);
 
   return (
     <SafeAreaView style={style.container}>
       {!error.hasError ? (
-        <View>
-          <Text style={style.text}>{location.city}</Text>
-          <Text style={style.text}>{location.region}</Text>
-          <Text style={style.text}>{location.country}</Text>
-          <View style={{ flexDirection: "row", gap: 20 }}>
+        <ScrollView>
+          <Typography size="sm">{location.city}</Typography>
+          <Typography size="sm">{location.region}</Typography>
+          <Typography size="sm">{location.country}</Typography>
+          <View style={{ flexDirection: "row" }}>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.hour.map((hour, index) => (
-                <Text key={index}>{hour}</Text>
+                <Typography key={index} size="sm">
+                  {hour}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.temperature.map((temp, index) => (
-                <Text key={index}>{temp}</Text>
+                <Typography key={index} size="sm">
+                  {temp}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.weather.map((weat, index) => (
-                <Text key={index}>{weat}</Text>
+                <Typography key={index} size="sm">
+                  {weat}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.windSpeed.map((wind, index) => (
-                <Text key={index}>{wind}</Text>
+                <Typography key={index} size="sm">
+                  {wind}
+                </Typography>
               ))}
             </View>
           </View>
-        </View>
+        </ScrollView>
       ) : (
-        <Text style={style.textError}>{errorDict[error.type]}</Text>
+        <Typography color="red" size="sm">
+          {errorDict[error.type]}
+        </Typography>
       )}
     </SafeAreaView>
   );

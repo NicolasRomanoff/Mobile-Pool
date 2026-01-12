@@ -1,28 +1,56 @@
 import { StyleSheet } from "react-native";
 
-const style = StyleSheet.create({
+export const black = "#1b1b1b";
+export const yellow = "#bb9200";
+export const white = "#cdcdc7";
+export const red = "#b21926";
+
+const mobileStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignContent: "center",
-    alignSelf: "center",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: black,
   },
-  topBar: {
-    height: 70,
-    backgroundColor: "orange",
-    display: "flex",
-    flexDirection: "row",
-    gap: 20,
+  button: {
+    backgroundColor: yellow,
+    borderColor: "black",
+    borderWidth: 1,
+    paddingVertical: 5,
     paddingHorizontal: 20,
+    borderRadius: 10,
+    justifyContent: "center",
   },
-  searchBar: {
+  ghostBtn: {
+    justifyContent: "center",
+  },
+  input: {
     flex: 1,
     fontSize: 20,
-    color: "white",
-    borderColor: "black",
+    color: white,
+    borderColor: black,
+    outlineColor: black,
     borderRadius: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     margin: 5,
+    paddingHorizontal: 10,
+  },
+  icon: { alignSelf: "center" },
+  topBar: {
+    height: 70,
+    backgroundColor: yellow,
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+    paddingHorizontal: 10,
+  },
+  bottomBar: {
+    height: 70,
+    backgroundColor: yellow,
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
     paddingHorizontal: 10,
   },
   suggestion: {
@@ -37,23 +65,7 @@ const style = StyleSheet.create({
   },
   text: {
     textAlign: "center",
-    fontSize: 30,
-  },
-  grayText: {
-    textAlign: "center",
-    color: "gray",
-    fontSize: 15,
-  },
-  suggestionText: {
-    fontSize: 20,
-    color: "black",
-  },
-  textError: {
-    textAlign: "center",
-    fontSize: 15,
-    color: "red",
-    marginHorizontal: 50,
   },
 });
 
-export default style;
+export default mobileStyles;

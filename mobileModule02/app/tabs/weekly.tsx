@@ -1,9 +1,11 @@
 import style from "@/assets/style";
+import { Typography } from "@/components/Typography";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
-import { errorDict, weatherCode } from "@/lib/utils";
+import { errorDict } from "@/lib/error.const";
+import { weatherCode } from "@/lib/weather.const";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Weekly = () => {
@@ -41,45 +43,55 @@ const Weekly = () => {
               weatherCode[code as keyof typeof weatherCode] || "Undefined"
           ),
         });
-      } catch (e) {
+      } catch {
         setError({ hasError: true, type: "API Fail" });
       }
     };
     getWeeklyWeather();
-  }, [location]);
+  }, [location, setError]);
 
   return (
     <SafeAreaView style={style.container}>
       {!error.hasError ? (
         <View>
-          <Text style={style.text}>{location.city}</Text>
-          <Text style={style.text}>{location.region}</Text>
-          <Text style={style.text}>{location.country}</Text>
-          <View style={{ flexDirection: "row", gap: 20 }}>
+          <Typography size="sm">{location.city}</Typography>
+          <Typography size="sm">{location.region}</Typography>
+          <Typography size="sm">{location.country}</Typography>
+          <View style={{ flexDirection: "row" }}>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.date.map((day, index) => (
-                <Text key={index}>{day}</Text>
+                <Typography key={index} size="sm">
+                  {day}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.minTemperature.map((minTemp, index) => (
-                <Text key={index}>{minTemp}</Text>
+                <Typography key={index} size="sm">
+                  {minTemp}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.maxTemperature.map((maxTemp, index) => (
-                <Text key={index}>{maxTemp}</Text>
+                <Typography key={index} size="sm">
+                  {maxTemp}
+                </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.weather.map((weat, index) => (
-                <Text key={index}>{weat}</Text>
+                <Typography key={index} size="sm">
+                  {weat}
+                </Typography>
               ))}
             </View>
           </View>
         </View>
       ) : (
-        <Text style={style.textError}>{errorDict[error.type]}</Text>
+        <Typography color="red" size="sm">
+          {errorDict[error.type]}
+        </Typography>
       )}
     </SafeAreaView>
   );
