@@ -139,16 +139,13 @@ const Ex03 = () => {
       {!!suggestions.length && (
         <Suggestions
           suggestions={suggestions}
+          setSuggestions={setSuggestions}
           setLocationTmp={setLocationTmp}
-          style={[
-            mobileStyles.suggestion,
-            {
-              left: coordsSuggestions.x,
-              top: coordsSuggestions.y + coordsSuggestions.height,
-              width: coordsSuggestions.width,
-              display: "flex",
-            },
-          ]}
+          style={{
+            left: coordsSuggestions.x,
+            top: coordsSuggestions.y + coordsSuggestions.height,
+            width: coordsSuggestions.width,
+          }}
         />
       )}
     </SafeAreaView>

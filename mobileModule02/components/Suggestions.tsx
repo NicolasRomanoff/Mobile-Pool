@@ -1,54 +1,53 @@
+import mobileStyles from "@/assets/style";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore, { TLocation } from "@/hooks/locationStore";
 import { ComponentProps } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
+import { Button } from "./Button";
 import { Typography } from "./Typography";
 
 const Suggestions: React.FC<
   ComponentProps<typeof View> & {
     suggestions: TLocation[];
+    setSuggestions: React.Dispatch<React.SetStateAction<TLocation[]>>;
     setLocationTmp: React.Dispatch<React.SetStateAction<string>>;
   }
-> = ({ suggestions, setLocationTmp, ...props }) => {
+> = ({ suggestions, setSuggestions, setLocationTmp, style, ...props }) => {
   const { setLocation } = useLocationStore();
   const { setError } = useErrorStore();
 
   return (
-    <View {...props}>
-      {!suggestions.length && (
-        <Typography size="sm" color="black">
-          No data ...
-        </Typography>
-      )}
-      {suggestions.map((sug, i) => {
+    <View style={[mobileStyles.suggestion, style]} {...props}>
+      {suggestions.map((suggestion, i) => {
         return (
-          <TouchableOpacity
+          <Button
             key={i}
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              padding: 5,
-              margin: 1,
-            }}
-            onPress={() => {
-              setError("");
-              setLocation({ ...sug });
+            variant="ghost"
+            style={{ padding: 5 }}
+            onClick={() => {
               setLocationTmp("");
+              setError("");
+              setLocation(suggestion);
+              setSuggestions([]);
             }}
           >
-            <Typography size="sm">
-              {Object.entries(sug)
+            <Text>
+              {Object.entries(suggestion)
                 .filter(
                   ([key, value]) =>
                     ["city", "region", "country"].includes(key) && value
                 )
-                .map(([key, value], index) => (
-                  <Text key={index} style={{ color: index ? "gray" : "black" }}>
+                .map(([_, value], index) => (
+                  <Typography
+                    key={index}
+                    color={index ? "grey" : "black"}
+                    size="xs"
+                  >
                     {(index ? ", " : "") + value}
-                  </Text>
+                  </Typography>
                 ))}
-            </Typography>
-          </TouchableOpacity>
+            </Text>
+          </Button>
         );
       })}
     </View>

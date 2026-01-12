@@ -1,10 +1,10 @@
-import mobileStyles, { black, red, white, yellow } from "@/assets/style";
+import mobileStyles, { black, grey, red, white, yellow } from "@/assets/style";
 import { Text, TextProps } from "react-native";
 
 const typographyVariants = {
   style: { default: mobileStyles.text },
-  size: { lg: 50, md: 30, sm: 20 },
-  color: { black: black, yellow: yellow, white: white, red: red },
+  size: { lg: 50, md: 30, sm: 20, xs: 15 },
+  color: { black: black, yellow: yellow, white: white, red: red, grey: grey },
 };
 type TTypographyVariants = typeof typographyVariants;
 
