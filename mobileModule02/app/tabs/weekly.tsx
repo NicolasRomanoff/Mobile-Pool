@@ -63,31 +63,31 @@ const Weekly = () => {
           <Typography size="sm">{location.city}</Typography>
           <Typography size="sm">{location.region}</Typography>
           <Typography size="sm">{location.country}</Typography>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", gap: 20 }}>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.date.map((day, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {day}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.minTemperature.map((minTemp, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {minTemp}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.maxTemperature.map((maxTemp, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {maxTemp}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {weeklyWeather?.weather.map((weat, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {weat}
                 </Typography>
               ))}

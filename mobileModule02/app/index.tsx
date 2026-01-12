@@ -10,8 +10,13 @@ import useErrorStore from "@/hooks/errorStore";
 import useLocationStore, { TLocation } from "@/hooks/locationStore";
 import routes from "@/lib/routes.const";
 import { TGetCitiesApiResponse } from "@/lib/weather.const";
+import {
+  getCurrentPositionAsync,
+  getLastKnownPositionAsync,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
 import { Navigation, Search } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { TextInput, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SceneMap, TabView } from "react-native-tab-view";
@@ -49,6 +54,27 @@ const getCities = async (name: string): Promise<TLocation[] | null> => {
   }
 };
 
+const getCurrentLocation = async ({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+    );
+    if (!response.ok) return null;
+    const { address } = (await response.json()) as {
+      address: { country: string; county: string; town: string };
+    };
+    return address;
+  } catch {
+    return null;
+  }
+};
+
 const Ex03 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -62,35 +88,36 @@ const Ex03 = () => {
     width: number;
     height: number;
   }>({ x: 0, y: 0, width: 0, height: 0 });
-  const citiesRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInput>(null);
 
-  // const getLocation = async () => {
-  //   let { status } = await requestForegroundPermissionsAsync();
-  //   if (status === "granted") {
-  //     let position = await getLastKnownPositionAsync({});
-  //     if (!position) position = await getCurrentPositionAsync({});
-  //     const coords = position.coords;
-  //     const location = await reverseGeocodeAsync({
-  //       latitude: coords.latitude,
-  //       longitude: coords.longitude,
-  //     });
-  //     setError("");
-  //     setLocation({
-  //       city: location[0]?.city,
-  //       region: location[0]?.region,
-  //       country: location[0]?.country,
-  //       latitude: coords.latitude,
-  //       longitude: coords.longitude,
-  //     });
-  //   } else setError("Unauthorized");
-  // };
-
-  // useEffect(() => {
-  //   getLocation();
-  // }, []);
+  const getLocation = useCallback(async () => {
+    let { status } = await requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      let position = await getLastKnownPositionAsync({});
+      if (!position) position = await getCurrentPositionAsync({});
+      const coords = position.coords;
+      const currentLocation = await getCurrentLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
+      if (!currentLocation) return setError("Failed");
+      setError("");
+      setLocation({
+        city: currentLocation.town,
+        region: currentLocation.county,
+        country: currentLocation.country,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
+    } else setError("Unauthorized");
+  }, [setLocation, setError]);
 
   useEffect(() => {
-    citiesRef.current?.measureInWindow((x, y, width, height) => {
+    getLocation();
+  }, [getLocation]);
+
+  useEffect(() => {
+    inputRef.current?.measureInWindow((x, y, width, height) => {
       setCoordsSuggestions({ x, y, width, height });
     });
   }, []);
@@ -110,7 +137,7 @@ const Ex03 = () => {
       <View style={myStyle.topBar}>
         <Search color={black} size={"30"} style={mobileStyles.icon} />
         <TextInput
-          ref={citiesRef}
+          ref={inputRef}
           style={mobileStyles.input}
           placeholder="Search location ..."
           value={locationTmp}

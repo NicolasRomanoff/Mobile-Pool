@@ -62,35 +62,38 @@ const Today = () => {
   return (
     <SafeAreaView style={style.container}>
       {!error ? (
-        <ScrollView>
+        <ScrollView
+          style={{ width: "100%", padding: 20 }}
+          contentContainerStyle={{ alignItems: "center" }}
+        >
           <Typography size="sm">{location.city}</Typography>
           <Typography size="sm">{location.region}</Typography>
           <Typography size="sm">{location.country}</Typography>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", gap: 20 }}>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.hour.map((hour, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {hour}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.temperature.map((temp, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {temp}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.weather.map((weat, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {weat}
                 </Typography>
               ))}
             </View>
             <View style={{ flexDirection: "column" }}>
               {todayWeather?.windSpeed.map((wind, index) => (
-                <Typography key={index} size="sm">
+                <Typography key={index} size="xs">
                   {wind}
                 </Typography>
               ))}
