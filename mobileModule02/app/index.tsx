@@ -7,14 +7,9 @@ import { Button } from "@/components/Button";
 import Suggestions from "@/components/Suggestions";
 import TabBar from "@/components/TabBar";
 import useErrorStore from "@/hooks/errorStore";
-import useLocationStore from "@/hooks/locationStore";
+import useLocationStore, { TLocation } from "@/hooks/locationStore";
 import routes from "@/lib/routes.const";
-import {
-  getCurrentPositionAsync,
-  getLastKnownPositionAsync,
-  requestForegroundPermissionsAsync,
-  reverseGeocodeAsync,
-} from "expo-location";
+import { TGetCitiesApiResponse } from "@/lib/weather.const";
 import { Navigation, Search } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { TextInput, useWindowDimensions, View } from "react-native";
@@ -30,14 +25,37 @@ const renderScene = SceneMap({
   weekly: Weekly,
 });
 
+const getCities = async (name: string): Promise<TLocation[] | null> => {
+  try {
+    const response = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
+    );
+    if (!response.ok) return null;
+
+    const citiesData = (await response.json()) as TGetCitiesApiResponse;
+    if (!citiesData.results) return [];
+
+    return citiesData.results.map((res) => {
+      return {
+        city: res.admin2 ?? "",
+        region: res.admin1,
+        country: res.country,
+        latitude: res.latitude,
+        longitude: res.longitude,
+      };
+    });
+  } catch {
+    return null;
+  }
+};
+
 const Ex03 = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const { location, setLocation } = useLocationStore();
+  const { setLocation } = useLocationStore();
   const { setError } = useErrorStore();
   const [locationTmp, setLocationTmp] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
+  const [suggestions, setSuggestions] = useState<TLocation[]>([]);
   const [coordsSuggestions, setCoordsSuggestions] = useState<{
     x: number;
     y: number;
@@ -46,67 +64,30 @@ const Ex03 = () => {
   }>({ x: 0, y: 0, width: 0, height: 0 });
   const citiesRef = useRef<TextInput>(null);
 
-  const fetchCity = async (name: string) => {
-    try {
-      const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
-      );
-      if (!response.ok) {
-        setError({ hasError: true, type: "API Fail" });
-        return;
-      }
-      const citiesData = await response.json();
-      if (!citiesData.results) {
-        setSuggestions([]);
-        return;
-      }
-      const suggestions = citiesData.results.map(
-        (res: {
-          admin1: string;
-          admin2: string;
-          country: string;
-          latitude: number;
-          longitude: number;
-        }) => {
-          return {
-            city: res.admin2,
-            region: res.admin1,
-            country: res.country,
-            latitude: res.latitude,
-            longitude: res.longitude,
-          };
-        }
-      );
-      setSuggestions(suggestions);
-    } catch {
-      setError({ hasError: true, type: "API Fail" });
-    }
-  };
+  // const getLocation = async () => {
+  //   let { status } = await requestForegroundPermissionsAsync();
+  //   if (status === "granted") {
+  //     let position = await getLastKnownPositionAsync({});
+  //     if (!position) position = await getCurrentPositionAsync({});
+  //     const coords = position.coords;
+  //     const location = await reverseGeocodeAsync({
+  //       latitude: coords.latitude,
+  //       longitude: coords.longitude,
+  //     });
+  //     setError("");
+  //     setLocation({
+  //       city: location[0]?.city,
+  //       region: location[0]?.region,
+  //       country: location[0]?.country,
+  //       latitude: coords.latitude,
+  //       longitude: coords.longitude,
+  //     });
+  //   } else setError("Unauthorized");
+  // };
 
-  const getLocation = async () => {
-    let { status } = await requestForegroundPermissionsAsync();
-    if (status === "granted") {
-      let position = await getLastKnownPositionAsync({});
-      if (!position) position = await getCurrentPositionAsync({});
-      const coords = position.coords;
-      const location = await reverseGeocodeAsync({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      });
-      setError({ hasError: false, type: "undefined" });
-      setLocation({
-        city: location[0]?.city,
-        region: location[0]?.region,
-        country: location[0]?.country,
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      });
-    } else setError({ hasError: true, type: "Location Access Denied" });
-  };
-
-  useEffect(() => {
-    getLocation();
-  }, []);
+  // useEffect(() => {
+  //   getLocation();
+  // }, []);
 
   useEffect(() => {
     citiesRef.current?.measureInWindow((x, y, width, height) => {
@@ -115,22 +96,14 @@ const Ex03 = () => {
   }, []);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      fetchCity(locationTmp);
+    const id = setTimeout(async () => {
+      const cities = await getCities(locationTmp);
+      setSuggestions(cities ?? []);
     }, 500);
     return () => {
       clearTimeout(id);
     };
-  }, [locationTmp]);
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setIsSuggestionSelected(false);
-    }, 500);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [location]);
+  }, [locationTmp, setError]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -141,18 +114,14 @@ const Ex03 = () => {
           style={mobileStyles.input}
           placeholder="Search location ..."
           value={locationTmp}
-          onBlur={() => {
-            setTimeout(() => {
-              if (locationTmp) {
-                setError({ hasError: true, type: "Unknown City" });
-                setIsSuggestionSelected(false);
-                setLocationTmp("");
-              }
-            }, 100);
-          }}
-          onChangeText={(e) => {
-            setLocationTmp(e);
-            setIsSuggestionSelected(true);
+          onChangeText={setLocationTmp}
+          onSubmitEditing={() => {
+            if (!locationTmp) return;
+            setLocationTmp("");
+            setError("");
+            if (!suggestions.length) return setError("Not found");
+            setLocation(suggestions[0]);
+            setSuggestions([]);
           }}
         />
         <Button variant="ghost" onClick={async () => await getLocation()}>
@@ -167,11 +136,10 @@ const Ex03 = () => {
         tabBarPosition={"bottom"}
         renderTabBar={(props) => <TabBar {...props} />}
       />
-      {isSuggestionSelected && (
+      {!!suggestions.length && (
         <Suggestions
           suggestions={suggestions}
           setLocationTmp={setLocationTmp}
-          setIsSuggestionSelected={setIsSuggestionSelected}
           style={[
             mobileStyles.suggestion,
             {

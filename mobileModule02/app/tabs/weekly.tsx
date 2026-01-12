@@ -3,10 +3,20 @@ import { Typography } from "@/components/Typography";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
 import { errorDict } from "@/lib/error.const";
-import { weatherCode } from "@/lib/weather.const";
+import { TGetWeeklyWeatherApiResponse, weatherCode } from "@/lib/weather.const";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const getWeeklyWeatherUrl = ({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) => {
+  return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`;
+};
 
 const Weekly = () => {
   const { location } = useLocationStore();
@@ -21,30 +31,26 @@ const Weekly = () => {
   useEffect(() => {
     const getWeeklyWeather = async () => {
       try {
-        const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`
-        );
+        const response = await fetch(getWeeklyWeatherUrl(location));
         if (!response.ok) {
-          setError({ hasError: true, type: "API Fail" });
+          setError("Failed");
           return;
         }
-        setError({ hasError: false, type: "undefined" });
-        const { daily, daily_units } = await response.json();
+        setError("");
+        const { daily, daily_units } =
+          (await response.json()) as TGetWeeklyWeatherApiResponse;
         setWeeklyWeather({
           date: daily.time,
           minTemperature: daily.temperature_2m_min.map(
-            (minTemp: string) => minTemp + daily_units.temperature_2m_min
+            (minTemp) => minTemp + daily_units.temperature_2m_min
           ),
           maxTemperature: daily.temperature_2m_max.map(
-            (maxTemp: string) => maxTemp + daily_units.temperature_2m_max
+            (maxTemp) => maxTemp + daily_units.temperature_2m_max
           ),
-          weather: daily.weather_code.map(
-            (code: number) =>
-              weatherCode[code as keyof typeof weatherCode] || "Undefined"
-          ),
+          weather: daily.weather_code.map((code) => weatherCode[code]),
         });
       } catch {
-        setError({ hasError: true, type: "API Fail" });
+        setError("Failed");
       }
     };
     getWeeklyWeather();
@@ -52,7 +58,7 @@ const Weekly = () => {
 
   return (
     <SafeAreaView style={style.container}>
-      {!error.hasError ? (
+      {!error ? (
         <View>
           <Typography size="sm">{location.city}</Typography>
           <Typography size="sm">{location.region}</Typography>
@@ -90,7 +96,7 @@ const Weekly = () => {
         </View>
       ) : (
         <Typography color="red" size="sm">
-          {errorDict[error.type]}
+          {errorDict[error]}
         </Typography>
       )}
     </SafeAreaView>

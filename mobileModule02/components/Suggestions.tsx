@@ -1,22 +1,15 @@
 import useErrorStore from "@/hooks/errorStore";
-import useLocationStore from "@/hooks/locationStore";
+import useLocationStore, { TLocation } from "@/hooks/locationStore";
 import { ComponentProps } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Typography } from "./Typography";
 
 const Suggestions: React.FC<
-  {
-    suggestions: {
-      city: string;
-      region: string;
-      country: string;
-      latitude: number;
-      longitude: number;
-    }[];
+  ComponentProps<typeof View> & {
+    suggestions: TLocation[];
     setLocationTmp: React.Dispatch<React.SetStateAction<string>>;
-    setIsSuggestionSelected: React.Dispatch<React.SetStateAction<boolean>>;
-  } & ComponentProps<typeof View>
-> = ({ suggestions, setLocationTmp, setIsSuggestionSelected, ...props }) => {
+  }
+> = ({ suggestions, setLocationTmp, ...props }) => {
   const { setLocation } = useLocationStore();
   const { setError } = useErrorStore();
 
@@ -38,10 +31,9 @@ const Suggestions: React.FC<
               margin: 1,
             }}
             onPress={() => {
-              setError({ hasError: false, type: "undefined" });
+              setError("");
               setLocation({ ...sug });
               setLocationTmp("");
-              setIsSuggestionSelected(false);
             }}
           >
             <Typography size="sm">

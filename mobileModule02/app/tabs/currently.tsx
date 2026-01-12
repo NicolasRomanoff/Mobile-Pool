@@ -3,11 +3,23 @@ import { Typography } from "@/components/Typography";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
 import { errorDict } from "@/lib/error.const";
-import type { TWeatherCode } from "@/lib/weather.const";
-import { weatherCode } from "@/lib/weather.const";
+import {
+  weatherCode,
+  type TGetCurrentlyWeatherApiResponse,
+} from "@/lib/weather.const";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const getCurrentWeatherUrl = ({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) => {
+  return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code`;
+};
 
 const Currently = () => {
   const { location } = useLocationStore();
@@ -21,23 +33,21 @@ const Currently = () => {
   useEffect(() => {
     const getCurrentWeather = async () => {
       try {
-        const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,wind_speed_10m,weather_code`
-        );
+        const response = await fetch(getCurrentWeatherUrl(location));
         if (!response.ok) {
-          setError({ hasError: true, type: "API Fail" });
+          setError("Failed");
           return;
         }
-        setError({ hasError: false, type: "undefined" });
-        const { current, current_units } = await response.json();
+        setError("");
+        const { current, current_units } =
+          (await response.json()) as TGetCurrentlyWeatherApiResponse;
         setCurrentWeather({
           temperature: current.temperature_2m + current_units.temperature_2m,
-          weather:
-            weatherCode[current.weather_code as TWeatherCode] || "Undefined",
+          weather: weatherCode[current.weather_code],
           windSpeed: current.wind_speed_10m + current_units.wind_speed_10m,
         });
       } catch {
-        setError({ hasError: true, type: "API Fail" });
+        setError("Failed");
       }
     };
     getCurrentWeather();
@@ -45,7 +55,7 @@ const Currently = () => {
 
   return (
     <SafeAreaView style={mobileStyles.container}>
-      {!error.hasError ? (
+      {!error ? (
         <View>
           <Typography size="sm">{location.city}</Typography>
           <Typography size="sm" style={style.text}>
@@ -66,7 +76,7 @@ const Currently = () => {
         </View>
       ) : (
         <Typography color="red" size="sm">
-          {errorDict[error.type]}
+          {errorDict[error]}
         </Typography>
       )}
     </SafeAreaView>
