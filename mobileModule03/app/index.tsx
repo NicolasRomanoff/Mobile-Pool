@@ -81,7 +81,7 @@ const getCurrentLocation = async ({
   }
 };
 
-const Ex03 = () => {
+const AdvancedWeatherApp = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const { setLocation } = useLocationStore();
@@ -184,4 +184,4 @@ const Ex03 = () => {
   );
 };
 
-export default Ex03;
+export default AdvancedWeatherApp;

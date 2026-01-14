@@ -18,7 +18,7 @@ const renderScene = SceneMap({
   weekly: Weekly,
 });
 
-const Ex01 = () => {
+const WeatherApp = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const { setLocation } = useLocationStore();
@@ -50,4 +50,4 @@ const Ex01 = () => {
   );
 };
 
-export default Ex01;
+export default WeatherApp;
