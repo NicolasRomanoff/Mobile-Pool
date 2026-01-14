@@ -1,15 +1,18 @@
-import { Text, View } from "react-native";
+import mobileStyles from "@/assets/style";
+import { Button } from "@/components/Button";
+import { Typography } from "@/components/Typography";
+import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Index() {
+const DiaryApp = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <SafeAreaView style={mobileStyles.container}>
+      <Typography>Welcome to your Diary</Typography>
+      <Button onClick={() => router.push(`../login`)}>
+        <Typography color="black">Login</Typography>
+      </Button>
+    </SafeAreaView>
   );
-}
+};
+
+export default DiaryApp;
