@@ -1,21 +1,14 @@
-import { errorDict } from "@/lib/utils";
+import type { TErrorDict } from "@/lib/error.const";
 import { create } from "zustand";
 
 type ErrorStore = {
-  error: {
-    hasError: boolean;
-    type: keyof typeof errorDict;
-  };
-  setError: (error: {
-    hasError: boolean;
-    type: keyof typeof errorDict;
-  }) => void;
+  error: TErrorDict;
+  setError: (error: TErrorDict) => void;
 };
 
 const useErrorStore = create<ErrorStore>((set) => ({
-  error: { hasError: false, type: "undefined" },
-  setError: (error: { hasError: boolean; type: keyof typeof errorDict }) =>
-    set({ error }),
+  error: "",
+  setError: (error: TErrorDict) => set({ error }),
 }));
 
 export default useErrorStore;
