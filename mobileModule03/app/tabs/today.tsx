@@ -10,7 +10,7 @@ import useLocationStore from "@/hooks/locationStore";
 import { TGetTodayWeatherApiResponse, weatherCode } from "@/lib/weather.const";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, LayoutRectangle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const getTodayWeatherUrl = ({
@@ -32,10 +32,7 @@ const Today = () => {
     weather: string[];
     windSpeed: string[];
   }>();
-  const [chartLength, setChartLength] = useState<{
-    width: number;
-    height: number;
-  }>();
+  const [chartLength, setChartLength] = useState<LayoutRectangle>();
 
   useEffect(() => {
     const getTodayWeather = async () => {
@@ -94,12 +91,7 @@ const Today = () => {
   return (
     <SafeAreaView style={style.container}>
       <HeaderView />
-      <ContentView
-        onLayout={(event) => {
-          const { width, height } = event.nativeEvent.layout;
-          setChartLength({ width, height });
-        }}
-      >
+      <ContentView onLayout={(e) => setChartLength(e.nativeEvent.layout)}>
         <WeatherChart
           chartData={chartData}
           width={chartLength?.width ?? 0}

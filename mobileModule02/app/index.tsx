@@ -16,8 +16,13 @@ import {
   requestForegroundPermissionsAsync,
 } from "expo-location";
 import { Navigation, Search } from "lucide-react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { TextInput, useWindowDimensions, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  LayoutRectangle,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SceneMap, TabView } from "react-native-tab-view";
 import Currently from "./tabs/currently";
@@ -82,13 +87,12 @@ const Ex03 = () => {
   const { setError } = useErrorStore();
   const [locationTmp, setLocationTmp] = useState("");
   const [suggestions, setSuggestions] = useState<TLocation[]>([]);
-  const [coordsSuggestions, setCoordsSuggestions] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>({ x: 0, y: 0, width: 0, height: 0 });
-  const inputRef = useRef<TextInput>(null);
+  const [coordsSuggestions, setCoordsSuggestions] = useState<LayoutRectangle>({
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  });
 
   const getLocation = useCallback(async () => {
     let { status } = await requestForegroundPermissionsAsync();
@@ -117,12 +121,6 @@ const Ex03 = () => {
   }, [getLocation]);
 
   useEffect(() => {
-    inputRef.current?.measureInWindow((x, y, width, height) => {
-      setCoordsSuggestions({ x, y, width, height });
-    });
-  }, []);
-
-  useEffect(() => {
     const id = setTimeout(async () => {
       const cities = await getCities(locationTmp);
       setSuggestions(cities ?? []);
@@ -137,11 +135,11 @@ const Ex03 = () => {
       <View style={myStyle.topBar}>
         <Search color={black} size={"30"} style={mobileStyles.icon} />
         <TextInput
-          ref={inputRef}
           style={mobileStyles.input}
           placeholder="Search location ..."
           value={locationTmp}
           onChangeText={setLocationTmp}
+          onLayout={(e) => setCoordsSuggestions(e.nativeEvent.layout)}
           onSubmitEditing={() => {
             if (!locationTmp) return;
             setLocationTmp("");

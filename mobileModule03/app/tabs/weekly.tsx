@@ -10,7 +10,7 @@ import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
 import { TGetWeeklyWeatherApiResponse, weatherCode } from "@/lib/weather.const";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, LayoutRectangle, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const getWeeklyWeatherUrl = ({
@@ -32,10 +32,7 @@ const Weekly = () => {
     maxTemperature: string[];
     weather: string[];
   }>();
-  const [chartLength, setChartLength] = useState<{
-    width: number;
-    height: number;
-  }>();
+  const [chartLength, setChartLength] = useState<LayoutRectangle>();
 
   useEffect(() => {
     const getWeeklyWeather = async () => {
@@ -100,12 +97,7 @@ const Weekly = () => {
   return (
     <SafeAreaView style={style.container}>
       <HeaderView />
-      <ContentView
-        onLayout={(event) => {
-          const { width, height } = event.nativeEvent.layout;
-          setChartLength({ width, height });
-        }}
-      >
+      <ContentView onLayout={(e) => setChartLength(e.nativeEvent.layout)}>
         <WeatherChart
           chartData={chartData}
           width={chartLength?.width ?? 0}
