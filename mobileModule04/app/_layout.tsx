@@ -1,6 +1,7 @@
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBq41inLeGeudlThoEXgopCqZpGcf7USYA",
@@ -12,15 +13,27 @@ const firebaseConfig = {
   measurementId: "G-HJMGQ4Q6JK",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, (user) => {
-  if (user) router.push("../diary");
-});
+initializeApp(firebaseConfig);
 
 const RootLayout = () => {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const subscriber = onAuthStateChanged(getAuth(), (user) => setUser(user));
+    return subscriber;
+  }, []);
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={!user}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login/index" />
+      </Stack.Protected>
+      <Stack.Protected guard={!!user}>
+        <Stack.Screen name="diary/index" />
+      </Stack.Protected>
+    </Stack>
+  );
 };
 
 export default RootLayout;
