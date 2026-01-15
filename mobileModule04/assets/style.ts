@@ -31,7 +31,7 @@ const mobileStyles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     color: white,
-    borderColor: black,
+    borderColor: white,
     outlineColor: black,
     borderRadius: 10,
     borderWidth: 1,

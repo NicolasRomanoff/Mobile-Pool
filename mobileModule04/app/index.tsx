@@ -12,7 +12,7 @@ const DiaryApp = () => {
       <Typography>Welcome to your Diary</Typography>
       <Button
         onClick={() =>
-          user ? router.push(`../diary`) : router.push("../login")
+          user ? router.push(`../profile`) : router.push("../login")
         }
       >
         <Typography color="black">Login</Typography>

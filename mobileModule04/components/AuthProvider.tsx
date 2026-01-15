@@ -1,6 +1,7 @@
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
-import { getApps, initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
+import { Auth, getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore";
 import React, {
   createContext,
   ReactNode,
@@ -26,6 +27,9 @@ preventAutoHideAsync();
 type TAuthContext = {
   user: User | null;
   isLoading: boolean;
+  app: FirebaseApp;
+  auth: Auth;
+  db: Firestore;
 };
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
@@ -48,8 +52,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (!isLoading) hideAsync();
   }, [isLoading]);
 
+  const app = getApp();
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
+    <AuthContext.Provider value={{ user, isLoading, app, auth, db }}>
       {children}
     </AuthContext.Provider>
   );

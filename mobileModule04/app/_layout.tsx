@@ -8,12 +8,12 @@ const RootLayoutNav = () => {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
       <Stack.Protected guard={!user}>
+        <Stack.Screen name="index" />
         <Stack.Screen name="login/index" />
       </Stack.Protected>
       <Stack.Protected guard={!!user}>
-        <Stack.Screen name="diary/index" />
+        <Stack.Screen name="profile/index" />
       </Stack.Protected>
     </Stack>
   );
