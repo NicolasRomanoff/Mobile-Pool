@@ -15,11 +15,16 @@ export const Button: React.FC<
     onClick?: (event: GestureResponderEvent) => void;
     variant?: keyof TTButtonVariants["variant"];
   }
-> = ({ onClick, variant = "default", style, ...props }) => {
+> = ({ onClick, variant = "default", style, disabled, ...props }) => {
   return (
     <TouchableOpacity
-      style={[buttonVariants.variant[variant], style]}
+      style={[
+        buttonVariants.variant[variant],
+        disabled && { opacity: 0.5 },
+        style,
+      ]}
       onPress={onClick}
+      disabled={disabled}
       {...props}
     />
   );

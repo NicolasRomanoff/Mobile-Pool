@@ -1,8 +1,7 @@
 import mobileStyles, { black, yellow } from "@/assets/style";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
-import { TFeeling, TNote } from "@/utils/const";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { TEntryNote, TFeeling } from "@/utils/const";
 import { ArrowDown } from "lucide-react-native";
 import { useState } from "react";
 import { Modal, ModalProps, TextInput, View } from "react-native";
@@ -15,13 +14,11 @@ const NewEntryModal: React.FC<
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   }
 > = ({ modalVisible, setModalVisible }) => {
-  const { user, db } = useAuth();
-  const [newEntry, setNewEntry] = useState<TNote>({
-    date: serverTimestamp(),
+  const { addNote } = useAuth();
+  const [newEntry, setNewEntry] = useState<TEntryNote>({
     icon: "mid",
     text: "",
     title: "",
-    usermail: user!.email!,
   });
 
   return (
@@ -65,8 +62,10 @@ const NewEntryModal: React.FC<
           }
         />
         <Button
-          onClick={async () => {
-            await addDoc(collection(db, "notes"), newEntry);
+          disabled={!newEntry.title || !newEntry.text}
+          onClick={() => {
+            addNote(newEntry);
+            setModalVisible(false);
           }}
         >
           <Typography color="black">Add</Typography>
