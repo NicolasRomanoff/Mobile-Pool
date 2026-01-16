@@ -6,6 +6,7 @@ export const white = "#cdcdc7";
 export const red = "#b21926";
 export const grey = "#6d6d6d";
 export const blue = "#3d7eff";
+export const green = "#00b406";
 
 const mobileStyles = StyleSheet.create({
   container: {

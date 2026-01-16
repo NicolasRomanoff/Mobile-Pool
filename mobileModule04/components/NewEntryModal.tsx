@@ -1,13 +1,13 @@
 import mobileStyles, { black, yellow } from "@/assets/style";
 import { Button } from "@/components/Button";
 import { Typography } from "@/components/Typography";
-import { feelingsIcon, TFeeling, TNote } from "@/utils/const";
-import { Picker } from "@react-native-picker/picker";
+import { TFeeling, TNote } from "@/utils/const";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { ArrowDown } from "lucide-react-native";
 import { useState } from "react";
 import { Modal, ModalProps, TextInput, View } from "react-native";
 import { useAuth } from "./AuthProvider";
+import FeelingSelector from "./FeelingSelector";
 
 const NewEntryModal: React.FC<
   ModalProps & {
@@ -48,15 +48,12 @@ const NewEntryModal: React.FC<
           }
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Picker
-            onValueChange={(value: TFeeling) => {
-              setNewEntry((prev) => ({ ...prev, icon: value }));
+          <FeelingSelector
+            feeling={newEntry.icon}
+            setFeeling={(feeling: TFeeling) => {
+              setNewEntry((prev) => ({ ...prev, icon: feeling }));
             }}
-          >
-            {Object.keys(feelingsIcon).map((name, i) => (
-              <Picker.Item key={i} label={name} value={name} />
-            ))}
-          </Picker>
+          />
           <ArrowDown color={yellow} size={40} />
         </View>
         <TextInput
