@@ -6,7 +6,7 @@ import { black } from "@/assets/style";
 import { dateFormat, feelingsIcon, TNote } from "@/utils/const";
 import { format, parse } from "date-fns";
 import { enUS, fr } from "date-fns/locale";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./Button";
 
 const NoteModal: React.FC<{
@@ -103,12 +103,6 @@ const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
 
 const Notes = () => {
   const { getNotes } = useAuth();
-  const [notes, setNotes] = useState<TNote[]>([]);
-
-  useEffect(() => {
-    const fetchNotes = async () => setNotes(await getNotes());
-    fetchNotes();
-  }, [getNotes, setNotes]);
 
   return (
     <View style={{ flex: 1, width: "100%" }}>
@@ -120,7 +114,7 @@ const Notes = () => {
           width: "100%",
         }}
       >
-        {notes.map((note, i) => (
+        {getNotes().map((note, i) => (
           <NoteCard key={i} note={note} />
         ))}
       </ScrollView>

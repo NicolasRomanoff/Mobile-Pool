@@ -51,7 +51,7 @@ type TAuthContext = {
   isLoading: boolean;
   logIn: (provider: TProvider) => Promise<void>;
   logOut: () => Promise<void>;
-  getNotes: () => Promise<TNote[]>;
+  getNotes: () => TNote[];
   addNote: (note: TEntryNote) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
 };
@@ -63,6 +63,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [reload, setReload] = useState(true);
+  const [notes, setNotes] = useState<TNote[]>([]);
+
+  const app = getApp();
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   useEffect(() => {
     const subscriber = onAuthStateChanged(getAuth(), (user) => {
@@ -76,9 +82,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (!isLoading) hideAsync();
   }, [isLoading]);
 
-  const app = getApp();
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  useEffect(() => {
+    if (!reload) return;
+
+    const fetchNotes = async () => {
+      const notesCollection = collection(db, "notes");
+      const notesDocs = await getDocs(notesCollection);
+      const fetchedNotes = notesDocs.docs.map(
+        (notesDoc) =>
+          ({
+            ...notesDoc.data(),
+            id: notesDoc.id,
+          } as TNote)
+      );
+      setNotes(fetchedNotes);
+      setReload(false);
+    };
+    fetchNotes();
+  }, [db, reload]);
 
   const logIn = async (provider: TProvider) => {
     try {
@@ -93,17 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     await signOut(auth);
   };
 
-  const getNotes = async () => {
-    const notesCollection = collection(db, "notes");
-    const notesDocs = await getDocs(notesCollection);
-    return notesDocs.docs.map(
-      (notesDoc) =>
-        ({
-          ...notesDoc.data(),
-          id: notesDoc.id,
-        } as TNote)
-    );
-  };
+  const getNotes = () => notes;
 
   const addNote = async (note: TEntryNote) => {
     await addDoc(collection(db, "notes"), {
@@ -113,10 +124,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         locale: fr,
       }),
     });
+    setReload(true);
   };
 
   const deleteNote = async (id: string) => {
     await deleteDoc(doc(db, "notes", id));
+    setReload(true);
   };
 
   return (
