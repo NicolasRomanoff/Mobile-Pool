@@ -21,8 +21,10 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
   getFirestore,
+  onSnapshot,
+  orderBy,
+  query,
 } from "firebase/firestore";
 import React, {
   createContext,
@@ -63,7 +65,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [reload, setReload] = useState(true);
   const [notes, setNotes] = useState<TNote[]>([]);
 
   const app = getApp();
@@ -83,12 +84,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, [isLoading]);
 
   useEffect(() => {
-    if (!reload) return;
-
-    const fetchNotes = async () => {
-      const notesCollection = collection(db, "notes");
-      const notesDocs = await getDocs(notesCollection);
-      const fetchedNotes = notesDocs.docs.map(
+    const notesCollection = query(
+      collection(db, "notes"),
+      orderBy("date", "desc")
+    );
+    onSnapshot(notesCollection, (querySnapshot) => {
+      const fetchedNotes = querySnapshot.docs.map(
         (notesDoc) =>
           ({
             ...notesDoc.data(),
@@ -96,10 +97,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           } as TNote)
       );
       setNotes(fetchedNotes);
-      setReload(false);
-    };
-    fetchNotes();
-  }, [db, reload]);
+    });
+  }, [db]);
 
   const logIn = async (provider: TProvider) => {
     try {
@@ -124,12 +123,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         locale: fr,
       }),
     });
-    setReload(true);
   };
 
   const deleteNote = async (id: string) => {
     await deleteDoc(doc(db, "notes", id));
-    setReload(true);
   };
 
   return (
