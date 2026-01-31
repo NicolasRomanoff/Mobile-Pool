@@ -47,6 +47,8 @@ docker compose up
 
 The application will be available at `http://localhost:8081`
 
+> ⚠️ **Note for Windows users**: Docker performance on Windows is extremely slow due to file system synchronization between Windows and the Linux container. For better performance, consider using the web development method instead.
+
 ## 📚 Tech Stack
 
 | Technology       | Purpose                                             |

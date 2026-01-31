@@ -6,7 +6,7 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./app:/mobileModule/app
+      - .:/mobileModule
     command: bash -c "umask 000 && pnpm i --frozen-lockfile && chmod 777 -R /mobileModule/node_modules && pnpm lint && pnpm start"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/"]
