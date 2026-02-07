@@ -12,8 +12,8 @@ const getWeeklyWeatherUrl = ({
   latitude,
   longitude,
 }: {
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
 }) => {
   return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`;
 };
@@ -30,6 +30,7 @@ const Weekly = () => {
 
   useEffect(() => {
     const getWeeklyWeather = async () => {
+      if (!location.longitude || !location.latitude) return;
       try {
         const response = await fetch(getWeeklyWeatherUrl(location));
         if (!response.ok) {
@@ -42,10 +43,10 @@ const Weekly = () => {
         setWeeklyWeather({
           date: daily.time,
           minTemperature: daily.temperature_2m_min.map(
-            (minTemp) => minTemp + daily_units.temperature_2m_min
+            (minTemp) => minTemp + daily_units.temperature_2m_min,
           ),
           maxTemperature: daily.temperature_2m_max.map(
-            (maxTemp) => maxTemp + daily_units.temperature_2m_max
+            (maxTemp) => maxTemp + daily_units.temperature_2m_max,
           ),
           weather: daily.weather_code.map((code) => weatherCode[code]),
         });

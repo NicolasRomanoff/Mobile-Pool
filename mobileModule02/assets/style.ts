@@ -36,6 +36,7 @@ const mobileStyles = StyleSheet.create({
     borderWidth: 1,
     margin: 5,
     paddingHorizontal: 10,
+    minWidth: 0,
   },
   icon: { alignSelf: "center" },
   topBar: {

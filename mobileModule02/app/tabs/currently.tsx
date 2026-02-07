@@ -15,8 +15,8 @@ const getCurrentWeatherUrl = ({
   latitude,
   longitude,
 }: {
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
 }) => {
   return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code`;
 };
@@ -32,6 +32,7 @@ const Currently = () => {
 
   useEffect(() => {
     const getCurrentWeather = async () => {
+      if (!location.longitude || !location.latitude) return;
       try {
         const response = await fetch(getCurrentWeatherUrl(location));
         if (!response.ok) {

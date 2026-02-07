@@ -1,9 +1,4 @@
-import {
-  black,
-  default as mobileStyles,
-  default as myStyle,
-} from "@/assets/style";
-import { Button } from "@/components/Button";
+import { black, default as mobileStyles } from "@/assets/style";
 import Suggestions from "@/components/Suggestions";
 import TabBar from "@/components/TabBar";
 import useErrorStore from "@/hooks/errorStore";
@@ -38,7 +33,7 @@ const renderScene = SceneMap({
 const getCities = async (name: string): Promise<TLocation[] | null> => {
   try {
     const response = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
+      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`,
     );
     if (!response.ok) return null;
 
@@ -68,7 +63,7 @@ const getCurrentLocation = async ({
 }) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
     );
     if (!response.ok) return null;
     const { address } = (await response.json()) as {
@@ -132,8 +127,8 @@ const MediumWeatherApp = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={myStyle.topBar}>
-        <Search color={black} size={"30"} style={mobileStyles.icon} />
+      <View style={mobileStyles.topBar}>
+        <Search color={black} size={30} style={mobileStyles.icon} />
         <TextInput
           style={mobileStyles.input}
           placeholder="Search location ..."
@@ -149,9 +144,12 @@ const MediumWeatherApp = () => {
             setSuggestions([]);
           }}
         />
-        <Button variant="ghost" onClick={async () => await getLocation()}>
-          <Navigation color={black} size={"30"} style={mobileStyles.icon} />
-        </Button>
+        <Navigation
+          color={black}
+          size={30}
+          onTouchStart={async () => await getLocation()}
+          style={mobileStyles.icon}
+        />
       </View>
       <TabView
         navigationState={{ index, routes }}
