@@ -1,4 +1,5 @@
 import { black, default as mobileStyles } from "@/assets/style";
+import { Button } from "@/components/Button";
 import Suggestions from "@/components/Suggestions";
 import TabBar from "@/components/TabBar";
 import useErrorStore from "@/hooks/errorStore";
@@ -144,12 +145,9 @@ const MediumWeatherApp = () => {
             setSuggestions([]);
           }}
         />
-        <Navigation
-          color={black}
-          size={30}
-          onTouchStart={async () => await getLocation()}
-          style={mobileStyles.icon}
-        />
+        <Button variant="ghost" onClick={async () => await getLocation()}>
+          <Navigation color={black} size={"30"} style={mobileStyles.icon} />
+        </Button>
       </View>
       <TabView
         navigationState={{ index, routes }}
