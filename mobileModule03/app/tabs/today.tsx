@@ -17,8 +17,8 @@ const getTodayWeatherUrl = ({
   latitude,
   longitude,
 }: {
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
 }) => {
   return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weather_code,wind_speed_10m&forecast_days=1`;
 };
@@ -36,6 +36,7 @@ const Today = () => {
 
   useEffect(() => {
     const getTodayWeather = async () => {
+      if (!location.longitude || !location.latitude) return;
       try {
         const response = await fetch(getTodayWeatherUrl(location));
         if (!response.ok) {
@@ -50,11 +51,11 @@ const Today = () => {
             return format(new Date(time), "HH:mm");
           }),
           temperature: hourly.temperature_2m.map(
-            (temp) => temp + hourly_units.temperature_2m
+            (temp) => temp + hourly_units.temperature_2m,
           ),
           weather: hourly.weather_code.map((code) => weatherCode[code].type),
           windSpeed: hourly.wind_speed_10m.map(
-            (speed) => speed + hourly_units.wind_speed_10m
+            (speed) => speed + hourly_units.wind_speed_10m,
           ),
         });
       } catch {
@@ -80,7 +81,7 @@ const Today = () => {
     datasets: [
       {
         data: todayWeather?.temperature.map((temperature) =>
-          Number(temperature.replace("°C", ""))
+          Number(temperature.replace("°C", "")),
         ) || [0, 0],
         color: (opacity = 1) => `rgba(190, 150, 0, ${opacity})`,
         strokeWidth: 2,

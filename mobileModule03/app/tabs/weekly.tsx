@@ -17,8 +17,8 @@ const getWeeklyWeatherUrl = ({
   latitude,
   longitude,
 }: {
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
 }) => {
   return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min`;
 };
@@ -36,6 +36,7 @@ const Weekly = () => {
 
   useEffect(() => {
     const getWeeklyWeather = async () => {
+      if (!location.longitude || !location.latitude) return;
       try {
         const response = await fetch(getWeeklyWeatherUrl(location));
         if (!response.ok) {
@@ -48,10 +49,10 @@ const Weekly = () => {
         setWeeklyWeather({
           date: daily.time,
           minTemperature: daily.temperature_2m_min.map(
-            (minTemp) => minTemp + daily_units.temperature_2m_min
+            (minTemp) => minTemp + daily_units.temperature_2m_min,
           ),
           maxTemperature: daily.temperature_2m_max.map(
-            (maxTemp) => maxTemp + daily_units.temperature_2m_max
+            (maxTemp) => maxTemp + daily_units.temperature_2m_max,
           ),
           weather: daily.weather_code.map((code) => weatherCode[code].type),
         });
@@ -74,19 +75,19 @@ const Weekly = () => {
   const chartData = {
     labels:
       weeklyWeather?.date.map((date) =>
-        date.slice(date.length - 5, date.length)
+        date.slice(date.length - 5, date.length),
       ) || [],
     datasets: [
       {
         data: weeklyWeather?.maxTemperature.map((temperature) =>
-          Number(temperature.replace("°C", ""))
+          Number(temperature.replace("°C", "")),
         ) || [0, 0],
         color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
         strokeWidth: 2,
       },
       {
         data: (weeklyWeather?.minTemperature.map((temperature) =>
-          Number(temperature.replace("°C", ""))
+          Number(temperature.replace("°C", "")),
         ) as number[]) || [0, 0],
         color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`,
         strokeWidth: 2,
