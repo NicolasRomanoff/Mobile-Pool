@@ -8,6 +8,7 @@ import Suggestions from "@/components/Suggestions";
 import TabBar from "@/components/TabBar";
 import useErrorStore from "@/hooks/errorStore";
 import useLocationStore, { TLocation } from "@/hooks/locationStore";
+import useScrollStore from "@/hooks/scrollStore";
 import routes from "@/lib/routes.const";
 import { TGetCitiesApiResponse } from "@/lib/weather.const";
 import {
@@ -39,7 +40,7 @@ const renderScene = SceneMap({
 const getCities = async (name: string): Promise<TLocation[] | null> => {
   try {
     const response = await fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`
+      `https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=5&language=fr&format=json`,
     );
     if (!response.ok) return null;
 
@@ -69,7 +70,7 @@ const getCurrentLocation = async ({
 }) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
     );
     if (!response.ok) return null;
     const { address } = (await response.json()) as {
@@ -83,6 +84,7 @@ const getCurrentLocation = async ({
 
 const AdvancedWeatherApp = () => {
   const layout = useWindowDimensions();
+  const { isSwipeEnabled } = useScrollStore();
   const [index, setIndex] = useState(0);
   const { setLocation } = useLocationStore();
   const { setError } = useErrorStore();
@@ -166,6 +168,7 @@ const AdvancedWeatherApp = () => {
           initialLayout={{ width: layout.width }}
           tabBarPosition={"bottom"}
           renderTabBar={(props) => <TabBar {...props} />}
+          swipeEnabled={!isSwipeEnabled}
         />
       </ImageBackground>
       {!!suggestions.length && (

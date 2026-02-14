@@ -1,5 +1,6 @@
 import style from "@/assets/style";
 import ErrorView from "@/components/ErrorView";
+import ScrollSafeFlatList from "@/components/ScrollSafeFlatList";
 import { Typography } from "@/components/Typography";
 import ContentView from "@/components/Views/ContentView";
 import FooterView from "@/components/Views/FooterView";
@@ -10,7 +11,7 @@ import useErrorStore from "@/hooks/errorStore";
 import useLocationStore from "@/hooks/locationStore";
 import { TGetWeeklyWeatherApiResponse, weatherCode } from "@/lib/weather.const";
 import { useEffect, useState } from "react";
-import { FlatList, LayoutRectangle, View } from "react-native";
+import { LayoutRectangle, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const getWeeklyWeatherUrl = ({
@@ -124,7 +125,7 @@ const Weekly = () => {
         </View>
       </ContentView>
       <FooterView>
-        <FlatList
+        <ScrollSafeFlatList
           data={weatherData}
           renderItem={({ item }) => <WeeklyWeatherCard {...item} />}
           keyExtractor={(item) => item.date}

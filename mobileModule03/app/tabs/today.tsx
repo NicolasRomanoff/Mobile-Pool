@@ -1,5 +1,6 @@
 import style from "@/assets/style";
 import ErrorView from "@/components/ErrorView";
+import ScrollSafeFlatList from "@/components/ScrollSafeFlatList";
 import ContentView from "@/components/Views/ContentView";
 import FooterView from "@/components/Views/FooterView";
 import HeaderView from "@/components/Views/HeaderView";
@@ -10,7 +11,7 @@ import useLocationStore from "@/hooks/locationStore";
 import { TGetTodayWeatherApiResponse, weatherCode } from "@/lib/weather.const";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { FlatList, LayoutRectangle } from "react-native";
+import { LayoutRectangle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const getTodayWeatherUrl = ({
@@ -100,7 +101,7 @@ const Today = () => {
         />
       </ContentView>
       <FooterView>
-        <FlatList
+        <ScrollSafeFlatList
           data={weatherData}
           renderItem={({ item }) => <TodayWeatherCard {...item} />}
           keyExtractor={(item) => item.hour}
