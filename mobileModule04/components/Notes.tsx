@@ -1,5 +1,5 @@
 import { useAuth } from "@/components/AuthProvider";
-import { Modal, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Typography } from "./Typography";
 
 import { black } from "@/assets/style";
@@ -8,12 +8,13 @@ import { format, parse } from "date-fns";
 import { enUS, fr } from "date-fns/locale";
 import { useState } from "react";
 import { Button } from "./Button";
+import Modal from "./Modal";
 
 const NoteModal: React.FC<{
   note: TNote;
-  modalVisible: boolean;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ note, modalVisible, setModalVisible }) => {
+  isModalVisible: boolean;
+  setIsModalVisible: (isModalVisible: boolean) => void;
+}> = ({ note, isModalVisible, setIsModalVisible }) => {
   const { deleteNote } = useAuth();
   const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
 
@@ -24,40 +25,31 @@ const NoteModal: React.FC<{
 
   return (
     <Modal
-      animationType="slide"
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(!modalVisible)}
+      isModalVisible={isModalVisible}
+      setIsModalVisible={setIsModalVisible}
     >
-      <View style={{ flex: 1, backgroundColor: black, padding: 30, gap: 10 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Typography>{`${dayName}, ${month} ${day}, ${year}`}</Typography>
-          <Button
-            variant="ghost"
-            onClick={() => setModalVisible(!modalVisible)}
-          >
-            <Typography color="red">X</Typography>
-          </Button>
-        </View>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Typography>My feelings :</Typography>
-          {feelingsIcon[note.icon]}
-        </View>
-        <Typography>{note.text}</Typography>
-        <Button
-          onClick={() => {
-            deleteNote(note.id);
-            setModalVisible(false);
-          }}
-        >
-          <Typography color="red">Delete</Typography>
-        </Button>
+      <Typography>{`${dayName}, ${month} ${day}, ${year}`}</Typography>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <Typography>My feelings :</Typography>
+        {feelingsIcon[note.icon]}
       </View>
+      <ScrollView>
+        <Typography>{note.text}</Typography>
+      </ScrollView>
+      <Button
+        onClick={() => {
+          deleteNote(note.id);
+          setIsModalVisible(false);
+        }}
+      >
+        <Typography color="red">Delete</Typography>
+      </Button>
     </Modal>
   );
 };
 
 const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
 
   const day = dateObj.getDate();
@@ -68,10 +60,10 @@ const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
     <View>
       <NoteModal
         note={note}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
       />
-      <Button onClick={() => setModalVisible(true)}>
+      <Button onClick={() => setIsModalVisible(true)}>
         <View
           style={{
             backgroundColor: black,
@@ -103,6 +95,7 @@ const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
 
 const Notes = () => {
   const { getNotes } = useAuth();
+  const notes = getNotes();
 
   return (
     <View style={{ flex: 1, width: "100%" }}>
@@ -114,9 +107,10 @@ const Notes = () => {
           width: "100%",
         }}
       >
-        {getNotes().map((note, i) => (
-          <NoteCard key={i} note={note} />
+        {notes.map((note) => (
+          <NoteCard key={note.id} note={note} />
         ))}
+        {!notes.length && <Typography>No diary</Typography>}
       </ScrollView>
     </View>
   );

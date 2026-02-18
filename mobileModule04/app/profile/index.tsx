@@ -9,16 +9,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Diary = () => {
   const { logOut } = useAuth();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
     <SafeAreaView style={mobileStyles.container}>
       <Notes />
       <NewEntryModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
       />
-      <Button onClick={() => setModalVisible(true)}>
+      <Button onClick={() => setIsModalVisible(true)}>
         <Typography color="black">New diary entry</Typography>
       </Button>
       <Button onClick={logOut}>

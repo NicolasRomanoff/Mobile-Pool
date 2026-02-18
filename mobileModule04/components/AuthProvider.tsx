@@ -25,6 +25,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import React, {
   createContext,
@@ -84,9 +85,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, [isLoading]);
 
   useEffect(() => {
+    if (!user) return setNotes([]);
+
     const notesCollection = query(
       collection(db, "notes"),
-      orderBy("date", "desc")
+      where("usermail", "==", user.email),
+      orderBy("date", "desc"),
     );
     onSnapshot(notesCollection, (querySnapshot) => {
       const fetchedNotes = querySnapshot.docs.map(
@@ -94,11 +98,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           ({
             ...notesDoc.data(),
             id: notesDoc.id,
-          } as TNote)
+          }) as TNote,
       );
       setNotes(fetchedNotes);
     });
-  }, [db]);
+  }, [db, user]);
 
   const logIn = async (provider: TProvider) => {
     try {
