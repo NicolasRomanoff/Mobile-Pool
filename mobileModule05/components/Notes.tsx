@@ -48,7 +48,7 @@ const NoteModal: React.FC<{
   );
 };
 
-const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
+export const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
 
@@ -57,7 +57,7 @@ const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
   const year = dateObj.getFullYear();
 
   return (
-    <View>
+    <View style={{ width: "100%" }}>
       <NoteModal
         note={note}
         isModalVisible={isModalVisible}

@@ -1,7 +1,9 @@
 import {
   dateFormat,
+  feelingsIcon,
   providers,
   TEntryNote,
+  TFeeling,
   TNote,
   TProvider,
 } from "@/utils/const";
@@ -55,6 +57,7 @@ type TFirebaseContext = {
   logIn: (provider: TProvider) => Promise<void>;
   logOut: () => Promise<void>;
   getNotes: () => TNote[];
+  getFeelingsPercent: () => Record<TFeeling, number>;
   addNote: (note: TEntryNote) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
 };
@@ -121,6 +124,24 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
 
   const getNotes = () => notes;
 
+  const getFeelingsPercent = () => {
+    const feelings = Object.fromEntries(
+      Object.keys(feelingsIcon).map((feeling) => [feeling, 0]),
+    ) as Record<TFeeling, number>;
+
+    notes.map((note) => (feelings[note.icon] += 1));
+    if (notes.length) {
+      Object.entries(feelings).map(
+        ([feeling, nb]) =>
+          (feelings[feeling as TFeeling] = Number(
+            ((nb * 100) / notes.length).toFixed(0),
+          )),
+      );
+    }
+
+    return feelings;
+  };
+
   const addNote = async (note: TEntryNote) => {
     await addDoc(collection(db, "notes"), {
       ...note,
@@ -137,7 +158,16 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <FirebaseContext.Provider
-      value={{ user, isLoading, logIn, logOut, getNotes, addNote, deleteNote }}
+      value={{
+        user,
+        isLoading,
+        logIn,
+        logOut,
+        getNotes,
+        getFeelingsPercent,
+        addNote,
+        deleteNote,
+      }}
     >
       {children}
     </FirebaseContext.Provider>
