@@ -1,4 +1,4 @@
-import { useAuth } from "@/components/AuthProvider";
+import { useFirebase } from "@/components/FirebaseProvider";
 import { ScrollView, View } from "react-native";
 import { Typography } from "./Typography";
 
@@ -15,7 +15,7 @@ const NoteModal: React.FC<{
   isModalVisible: boolean;
   setIsModalVisible: (isModalVisible: boolean) => void;
 }> = ({ note, isModalVisible, setIsModalVisible }) => {
-  const { deleteNote } = useAuth();
+  const { deleteNote } = useFirebase();
   const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
 
   const day = dateObj.getDate();
@@ -94,7 +94,7 @@ const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
 };
 
 const Notes = () => {
-  const { getNotes } = useAuth();
+  const { getNotes } = useFirebase();
   const notes = getNotes();
 
   return (

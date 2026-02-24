@@ -8,7 +8,7 @@ import {
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
-import { getApp, getApps, initializeApp } from "firebase/app";
+import { FirebaseError, getApp, getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
   onAuthStateChanged,
@@ -49,7 +49,7 @@ if (!getApps().length) initializeApp(firebaseConfig);
 
 preventAutoHideAsync();
 
-type TAuthContext = {
+type TFirebaseContext = {
   user: User | null;
   isLoading: boolean;
   logIn: (provider: TProvider) => Promise<void>;
@@ -59,9 +59,9 @@ type TAuthContext = {
   deleteNote: (id: string) => Promise<void>;
 };
 
-const AuthContext = createContext<TAuthContext | undefined>(undefined);
+const FirebaseContext = createContext<TFirebaseContext | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -106,15 +106,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const logIn = async (provider: TProvider) => {
     try {
-      const { user } = await signInWithPopup(auth, providers[provider]);
-      console.log("User logged :", user);
-    } catch {
-      console.log("Connexion error");
+      await signInWithPopup(auth, providers[provider]);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.log("Connexion error : ", error.message);
+      } else console.log("Unknown error : ", error);
     }
   };
 
   const logOut = async () => {
     await signOut(auth);
+    setUser(null);
   };
 
   const getNotes = () => notes;
@@ -134,16 +136,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider
+    <FirebaseContext.Provider
       value={{ user, isLoading, logIn, logOut, getNotes, addNote, deleteNote }}
     >
       {children}
-    </AuthContext.Provider>
+    </FirebaseContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+export const useFirebase = () => {
+  const context = useContext(FirebaseContext);
+  if (!context) {
+    throw new Error("useFirebase must be used within an FirebaseProvider");
+  }
   return context;
 };

@@ -5,8 +5,8 @@ import { TEntryNote, TFeeling } from "@/utils/const";
 import { ArrowDown } from "lucide-react-native";
 import { useState } from "react";
 import { ModalProps, TextInput, View } from "react-native";
-import { useAuth } from "./AuthProvider";
 import FeelingSelector from "./FeelingSelector";
+import { useFirebase } from "./FirebaseProvider";
 import Modal from "./Modal";
 
 const NewEntryModal: React.FC<
@@ -15,7 +15,7 @@ const NewEntryModal: React.FC<
     setIsModalVisible: (isModalVisible: boolean) => void;
   }
 > = ({ isModalVisible, setIsModalVisible }) => {
-  const { addNote } = useAuth();
+  const { addNote } = useFirebase();
   const [newEntry, setNewEntry] = useState<TEntryNote>({
     icon: "mid",
     text: "",

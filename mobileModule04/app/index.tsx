@@ -1,12 +1,12 @@
 import mobileStyles from "@/assets/style";
-import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/Button";
+import { useFirebase } from "@/components/FirebaseProvider";
 import { Typography } from "@/components/Typography";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const DiaryApp = () => {
-  const { user } = useAuth();
+  const { user } = useFirebase();
   return (
     <SafeAreaView style={mobileStyles.container}>
       <Typography>Welcome to your Diary</Typography>

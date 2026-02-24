@@ -1,6 +1,6 @@
 import mobileStyles from "@/assets/style";
-import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/Button";
+import { useFirebase } from "@/components/FirebaseProvider";
 import NewEntryModal from "@/components/NewEntryModal";
 import Notes from "@/components/Notes";
 import { Typography } from "@/components/Typography";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Diary = () => {
-  const { logOut } = useAuth();
+  const { logOut } = useFirebase();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (

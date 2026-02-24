@@ -1,12 +1,12 @@
 import mobileStyles from "@/assets/style";
-import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/Button";
+import { useFirebase } from "@/components/FirebaseProvider";
 import { Typography } from "@/components/Typography";
 import { providers, TProvider } from "@/utils/const";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Authentification = () => {
-  const { logIn } = useAuth();
+  const { logIn } = useFirebase();
   return (
     <SafeAreaView style={mobileStyles.container}>
       {Object.keys(providers).map((provider) => (

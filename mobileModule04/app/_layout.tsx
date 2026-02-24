@@ -1,8 +1,8 @@
-import { AuthProvider, useAuth } from "@/components/AuthProvider";
+import { FirebaseProvider, useFirebase } from "@/components/FirebaseProvider";
 import { Stack } from "expo-router";
 
 const RootLayoutNav = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useFirebase();
 
   if (isLoading) return null;
 
@@ -21,9 +21,9 @@ const RootLayoutNav = () => {
 
 const RootLayout = () => {
   return (
-    <AuthProvider>
+    <FirebaseProvider>
       <RootLayoutNav />
-    </AuthProvider>
+    </FirebaseProvider>
   );
 };
 
