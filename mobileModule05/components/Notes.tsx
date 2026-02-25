@@ -3,9 +3,9 @@ import { ScrollView, View } from "react-native";
 import { Typography } from "./Typography";
 
 import { black } from "@/assets/style";
-import { dateFormat, feelingsIcon, TNote } from "@/utils/const";
-import { format, parse } from "date-fns";
-import { enUS, fr } from "date-fns/locale";
+import { feelingsIcon, TNote } from "@/utils/const";
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
 import { useState } from "react";
 import { Button } from "./Button";
 import Modal from "./Modal";
@@ -16,7 +16,7 @@ const NoteModal: React.FC<{
   setIsModalVisible: (isModalVisible: boolean) => void;
 }> = ({ note, isModalVisible, setIsModalVisible }) => {
   const { deleteNote } = useFirebase();
-  const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
+  const dateObj = note.date.toDate();
 
   const day = dateObj.getDate();
   const dayName = format(dateObj, "EEEE", { locale: enUS });
@@ -50,7 +50,7 @@ const NoteModal: React.FC<{
 
 export const NoteCard: React.FC<{ note: TNote }> = ({ note }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const dateObj = parse(note.date, dateFormat, new Date(), { locale: fr });
+  const dateObj = note.date.toDate();
 
   const day = dateObj.getDate();
   const month = format(dateObj, "LLLL", { locale: enUS });

@@ -1,12 +1,4 @@
-import {
-  dateFormat,
-  providers,
-  TEntryNote,
-  TNote,
-  TProvider,
-} from "@/utils/const";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { providers, TEntryNote, TNote, TProvider } from "@/utils/const";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import { FirebaseError, getApp, getApps, initializeApp } from "firebase/app";
 import {
@@ -125,9 +117,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
     await addDoc(collection(db, "notes"), {
       ...note,
       usermail: user?.email,
-      date: format(new Date(), dateFormat, {
-        locale: fr,
-      }),
+      date: new Date(),
     });
   };
 

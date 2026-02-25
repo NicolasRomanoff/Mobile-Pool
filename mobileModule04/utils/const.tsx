@@ -1,5 +1,6 @@
 import { blue, green, grey, red, yellow } from "@/assets/style";
 import { GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
 import { Angry, Annoyed, Laugh, Meh, Smile } from "lucide-react-native";
 
 export const providers = {
@@ -19,7 +20,7 @@ export type TFeeling = keyof typeof feelingsIcon;
 
 export type TNote = {
   id: string;
-  date: string;
+  date: Timestamp;
   icon: TFeeling;
   text: string;
   title: string;
