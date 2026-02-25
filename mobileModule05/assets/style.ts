@@ -15,6 +15,7 @@ const mobileStyles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     backgroundColor: black,
+    paddingVertical: 10,
   },
   button: {
     backgroundColor: yellow,

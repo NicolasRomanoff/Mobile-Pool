@@ -4,7 +4,7 @@ import { Button } from "../Button";
 import { useFirebase } from "../FirebaseProvider";
 import { Typography } from "../Typography";
 
-const Profile = () => {
+const ProfileInformation = () => {
   const { user, logOut } = useFirebase();
 
   return (
@@ -15,14 +15,15 @@ const Profile = () => {
         alignItems: "center",
         justifyContent: "space-evenly",
         width: "100%",
-        margin: 10,
         paddingHorizontal: 10,
       }}
     >
       <Image
         style={{ width: 100, height: 100 }}
         defaultSource={require("@/assets/images/user_icon.png")}
-        source={{ uri: user?.photoURL ?? undefined }}
+        source={{
+          uri: user?.photoURL ?? require("@/assets/images/user_icon.png"),
+        }}
       />
       <View style={{ flex: 1 }}>
         <Typography numberOfLines={2}>{user?.displayName}</Typography>
@@ -36,4 +37,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileInformation;

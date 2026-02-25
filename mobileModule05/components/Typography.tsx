@@ -10,7 +10,7 @@ import { Text, TextProps } from "react-native";
 
 const typographyVariants = {
   style: { default: mobileStyles.text },
-  size: { lg: 50, md: 30, sm: 20, xs: 15 },
+  size: { lg: 30, md: 20, sm: 15, xs: 10 },
   color: {
     black: black,
     yellow: yellow,
