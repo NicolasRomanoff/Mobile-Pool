@@ -84,7 +84,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
       where("usermail", "==", user.email),
       orderBy("date", "desc"),
     );
-    onSnapshot(notesCollection, (querySnapshot) => {
+    const snapshot = onSnapshot(notesCollection, (querySnapshot) => {
       const fetchedNotes = querySnapshot.docs.map(
         (notesDoc) =>
           ({
@@ -94,6 +94,8 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
       );
       setNotes(fetchedNotes);
     });
+
+    return () => snapshot();
   }, [db, user]);
 
   const logIn = async (provider: TProvider) => {

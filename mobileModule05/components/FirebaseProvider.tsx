@@ -33,6 +33,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { DateData } from "react-native-calendars";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBq41inLeGeudlThoEXgopCqZpGcf7USYA",
@@ -53,7 +54,10 @@ type TFirebaseContext = {
   isLoading: boolean;
   logIn: (provider: TProvider) => Promise<void>;
   logOut: () => Promise<void>;
+  date: DateData | undefined;
+  setDate: (date: DateData) => void;
   getNotes: () => TNote[];
+  getNotesByDate: () => TNote[];
   getFeelingsPercent: () => Record<TFeeling, number>;
   addNote: (note: TEntryNote) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
@@ -67,6 +71,8 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notes, setNotes] = useState<TNote[]>([]);
+  const [date, setDate] = useState<DateData>();
+  const [notesByDate, setNotesByDate] = useState<TNote[]>([]);
 
   const app = getApp();
   const auth = getAuth(app);
@@ -92,7 +98,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
       where("usermail", "==", user.email),
       orderBy("date", "desc"),
     );
-    onSnapshot(notesCollection, (querySnapshot) => {
+    const snapshot = onSnapshot(notesCollection, (querySnapshot) => {
       const fetchedNotes = querySnapshot.docs.map(
         (notesDoc) =>
           ({
@@ -102,7 +108,33 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
       );
       setNotes(fetchedNotes);
     });
+
+    return () => snapshot();
   }, [db, user]);
+
+  useEffect(() => {
+    if (!user || !date) return setNotes([]);
+
+    const notesCollection = query(
+      collection(db, "notes"),
+      where("usermail", "==", user.email),
+      where("date", ">=", new Date(date.timestamp)),
+      where("date", "<", new Date(date.timestamp + 1000 * 60 * 60 * 24)),
+      orderBy("date", "asc"),
+    );
+    const snapshot = onSnapshot(notesCollection, (querySnapshot) => {
+      const fetchedNotes = querySnapshot.docs.map(
+        (notesDoc) =>
+          ({
+            ...notesDoc.data(),
+            id: notesDoc.id,
+          }) as TNote,
+      );
+      setNotesByDate(fetchedNotes);
+    });
+
+    return () => snapshot();
+  }, [db, user, date]);
 
   const logIn = async (provider: TProvider) => {
     try {
@@ -120,6 +152,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const getNotes = () => notes;
+  const getNotesByDate = () => notesByDate;
 
   const getFeelingsPercent = () => {
     const feelings = Object.fromEntries(
@@ -158,7 +191,10 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
         isLoading,
         logIn,
         logOut,
+        date,
+        setDate,
         getNotes,
+        getNotesByDate,
         getFeelingsPercent,
         addNote,
         deleteNote,
